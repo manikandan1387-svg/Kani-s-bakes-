@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kani's Whisk & Bakes</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23ffe3c9'/%3E%3Ctext x='50' y='62' font-size='55' text-anchor='middle'%3E%F0%9F%A5%84%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+:root{
+  --cocoa:#3E2723; --cocoa-dark:#2c1810; --cream:#FFF8F0; --peach:#D4A373; --peach-soft:#F3E1CC;
+  --gold:#D4A373; --gold-dark:#b9832c; --green:#4c8058; --green-soft:#e7f4ea; --red:#c25b4a; --red-soft:#fde8e6; --gray:#8a7b6f;
+  --bg:#FAF5EF; --line:#eadfc9; --radius:16px; --radius-sm:10px;
+  --shadow-sm:0 1px 3px rgba(62,39,35,.08); --shadow-md:0 8px 24px rgba(62,39,35,.12); --shadow-lg:0 16px 40px rgba(62,39,35,.18);
+  --font-head:'Playfair Display',Georgia,serif; --font-sub:'Poppins',system-ui,sans-serif; --font-body:'Inter',system-ui,Arial,sans-serif;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;font-family:var(--font-body);background:var(--bg);color:var(--cocoa-dark);-webkit-font-smoothing:antialiased;}
+h1,h2,h3{font-family:var(--font-head);}
+p{font-family:var(--font-body);}
+button,nav,.btn,.card button.add,.cat-filters button,input,textarea,select{font-family:var(--font-sub);}
+::selection{background:var(--peach);color:#fff;}
+
+/* ===== HEADER ===== */
+header.topbar{background:linear-gradient(135deg,var(--cocoa) 0%,#3a2116 100%);color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.1);transition:box-shadow .25s ease,padding .25s ease,background .25s ease;}
+header.topbar.scrolled{box-shadow:0 6px 22px rgba(0,0,0,.32);padding:8px 22px;background:linear-gradient(135deg,#2f1e18 0%,#241209 100%);}
+header.topbar.scrolled h1{font-size:16px;}
+header.topbar.scrolled .brandmark{width:34px;height:34px;}
+header.topbar h1{font-size:19px;margin:0;display:flex;align-items:center;gap:12px;line-height:1.15;font-weight:600;}
+header.topbar .brandmark{width:42px;height:42px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff0dd,var(--peach));display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 2px 6px rgba(0,0,0,.25),inset 0 0 0 2px rgba(255,255,255,.5);overflow:hidden;}
+header.topbar .brandmark svg{width:100%;height:100%;display:block;}
+header.topbar .brandname b{display:block;font-size:17px;letter-spacing:.2px;}
+header.topbar .brandname span.sub{display:block;font-family:'Nunito Sans',sans-serif;font-size:10.5px;font-weight:600;color:#f0dcc4;letter-spacing:.6px;text-transform:uppercase;margin-top:2px;}
+nav.tabs{display:flex;gap:6px;}
+nav.tabs button{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);color:#fff;padding:8px 15px;border-radius:22px;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s ease;font-family:inherit;}
+nav.tabs button:hover{background:rgba(255,255,255,.18);}
+nav.tabs button.active{background:#fff;color:var(--cocoa);border-color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+
+/* ===== HERO ===== */
+.hero{
+  position:relative;
+  background:
+    linear-gradient(180deg,rgba(28,16,10,.62) 0%,rgba(28,16,10,.72) 55%,rgba(28,16,10,.88) 100%),
+    url('https://images.pexels.com/photos/35228372/pexels-photo-35228372.jpeg?auto=compress&cs=tinysrgb&w=1400') center 30%/cover no-repeat;
+  padding:52px 22px 34px;text-align:center;border-bottom:1px solid var(--line);color:#fff;
+}
+.hero .hero-logo{width:88px;height:88px;margin:0 auto 16px;filter:drop-shadow(0 6px 18px rgba(0,0,0,.45));animation:heroFloat 4.5s ease-in-out infinite;}
+@keyframes heroFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
+@keyframes heroFadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+.hero h2{margin:0 0 10px;font-size:clamp(26px,4.2vw,38px);color:#fff;font-weight:800;text-shadow:0 2px 12px rgba(0,0,0,.35);font-family:var(--font-head);line-height:1.2;animation:heroFadeUp .6s ease both;}
+.hero .subhead{margin:0 auto;max-width:560px;color:#f4e8db;font-size:15px;line-height:1.6;text-shadow:0 1px 6px rgba(0,0,0,.3);font-family:var(--font-body);animation:heroFadeUp .6s ease .08s both;}
+.hero .hero-ctas{display:flex;justify-content:center;gap:12px;margin-top:22px;flex-wrap:wrap;animation:heroFadeUp .6s ease .15s both;}
+.hero .hero-ctas .btn{width:auto;padding:13px 26px;font-family:var(--font-sub);}
+.hero .chips{display:flex;justify-content:center;gap:10px;margin-top:16px;flex-wrap:wrap;animation:heroFadeUp .6s ease .1s both;}
+.hero .chip{background:rgba(255,255,255,.14);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.35);padding:7px 14px;border-radius:20px;font-size:12.5px;font-weight:700;color:#fff;box-shadow:var(--shadow-sm);font-family:var(--font-sub);}
+
+/* ===== TRUST BADGES + TRUST STAT SECTION ===== */
+.trust-badges{display:flex;justify-content:center;gap:22px;margin-top:24px;flex-wrap:wrap;animation:heroFadeUp .6s ease .2s both;}
+.trust-badges .tb{display:flex;flex-direction:column;align-items:center;color:#fff8f0;font-size:11.5px;font-weight:600;font-family:var(--font-sub);}
+.trust-badges .tb b{font-size:15px;font-family:var(--font-head);color:#fff;}
+.trust-section{margin:8px 0 28px;}
+.trust-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;}
+.trust-card{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);padding:18px 12px;text-align:center;box-shadow:var(--shadow-sm);}
+.trust-card .icon{font-size:26px;}
+.trust-card .val{font-size:21px;font-weight:800;color:var(--cocoa);font-family:var(--font-head);margin-top:4px;}
+.trust-card .lbl{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;font-weight:700;margin-top:2px;font-family:var(--font-sub);}
+
+/* ===== ABOUT KANI ===== */
+.about-section{display:grid;grid-template-columns:1fr;gap:18px;margin:8px 0 30px;background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-sm);}
+.about-section .about-panel{background:linear-gradient(160deg,var(--peach-soft),var(--peach));border-radius:var(--radius);display:flex;align-items:center;justify-content:center;padding:20px;min-height:120px;}
+.about-section .about-panel svg{width:80px;height:80px;}
+.about-section h3{margin:0 0 8px;color:var(--cocoa);font-size:20px;}
+.about-section p{margin:0 0 8px;font-size:13.5px;line-height:1.7;color:#5b4a3f;}
+@media(min-width:680px){.about-section{grid-template-columns:220px 1fr;align-items:center;}}
+
+/* ===== SCROLL ANIMATIONS ===== */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease;}
+.reveal.in{opacity:1;transform:translateY(0);}
+
+/* ===== FLOATING ACTION BUTTONS ===== */
+.fab-left-stack{position:fixed;bottom:22px;left:22px;z-index:60;display:flex;flex-direction:column;gap:10px;align-items:flex-start;}
+.fab-round{width:50px;height:50px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;box-shadow:var(--shadow-lg);transition:transform .15s ease,opacity .2s ease;}
+.fab-round:hover{transform:translateY(-2px) scale(1.05);}
+.fab-whatsapp{background:#25D366;color:#fff;}
+.fab-top{background:var(--cocoa);color:#fff;opacity:0;pointer-events:none;}
+.fab-top.show{opacity:1;pointer-events:auto;}
+
+/* ===== GALLERY STRIP (real photos of the bakes) ===== */
+.gallery-strip{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 4px;margin:4px 0 22px;scrollbar-width:none;}
+.gallery-strip::-webkit-scrollbar{display:none;}
+.gallery-strip img{flex:none;width:110px;height:82px;object-fit:cover;border-radius:12px;box-shadow:var(--shadow-sm);border:1px solid var(--line);transition:transform .18s ease;}
+.gallery-strip img:hover{transform:scale(1.04) translateY(-2px);}
+
+main{max-width:1000px;margin:0 auto;padding:24px 20px;padding-bottom:100px;}
+.section-title{font-size:22px;font-weight:700;margin:6px 0 14px;color:var(--cocoa);display:flex;align-items:center;gap:8px;}
+
+/* ===== CATEGORY FILTERS ===== */
+.cat-filters{display:flex;gap:9px;overflow-x:auto;padding:2px 2px 10px;scrollbar-width:none;}
+.cat-filters::-webkit-scrollbar{display:none;}
+.cat-filters button{flex:none;border:1.5px solid var(--line);background:var(--cream);color:var(--cocoa);padding:9px 17px;border-radius:22px;font-size:13.5px;font-weight:700;cursor:pointer;transition:all .18s ease;font-family:inherit;}
+.cat-filters button:hover{border-color:var(--gold);transform:translateY(-1px);}
+.cat-filters button.active{background:var(--cocoa);color:#fff;border-color:var(--cocoa);box-shadow:var(--shadow-sm);}
+
+/* ===== MENU GRID / CARDS ===== */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:18px;margin-top:6px;}
+@keyframes cardIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.card{background:var(--cream);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:8px;border:1px solid var(--line);transition:transform .25s ease,box-shadow .25s ease;animation:cardIn .35s ease both;position:relative;}
+.grid .card:nth-child(1){animation-delay:.02s;} .grid .card:nth-child(2){animation-delay:.05s;} .grid .card:nth-child(3){animation-delay:.08s;}
+.grid .card:nth-child(4){animation-delay:.11s;} .grid .card:nth-child(5){animation-delay:.14s;} .grid .card:nth-child(6){animation-delay:.17s;}
+.card:hover{transform:translateY(-6px);box-shadow:var(--shadow-md);border-color:#e9d5b8;}
+.card .photo{width:100%;height:150px;border-radius:12px;overflow:hidden;margin-bottom:2px;background:var(--peach-soft);position:relative;}
+.card .photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease;}
+.card .photo::after{content:"";position:absolute;inset:0;box-shadow:inset 0 -18px 22px -14px rgba(0,0,0,.25);pointer-events:none;}
+.card:hover .photo img{transform:scale(1.09);}
+.card h3{margin:0;font-size:16px;color:var(--cocoa);font-weight:600;font-family:var(--font-head);}
+.card p.desc{margin:0;font-size:12.5px;color:var(--gray);min-height:34px;line-height:1.5;}
+.card .price{font-weight:800;color:var(--cocoa-dark);font-size:17px;font-family:var(--font-head);}
+.card .rating{font-size:12px;color:var(--gold-dark);font-weight:700;display:flex;align-items:center;gap:4px;}
+.badges{display:flex;gap:5px;flex-wrap:wrap;}
+.badge{font-size:10px;padding:3px 8px;border-radius:6px;background:var(--peach-soft);color:var(--gold-dark);font-weight:700;letter-spacing:.2px;font-family:var(--font-sub);}
+.badge.veg{background:var(--green-soft);color:var(--green);}
+.corner-badge{position:absolute;top:12px;left:12px;z-index:2;font-size:10.5px;padding:4px 10px;border-radius:8px;font-weight:800;letter-spacing:.2px;box-shadow:var(--shadow-sm);font-family:var(--font-sub);color:#fff;}
+.corner-badge.bestseller{background:linear-gradient(135deg,#D4A373,#b9832c);}
+.corner-badge.new{background:linear-gradient(135deg,#4c8058,#3a6644);}
+.corner-badge.healthy{background:linear-gradient(135deg,#7a8f4e,#5c6c3a);}
+.card button.add{margin-top:4px;background:var(--gold);border:none;color:#2f1a11;font-weight:700;padding:10px;border-radius:var(--radius-sm);cursor:pointer;font-size:13.5px;transition:background .15s;font-family:inherit;}
+.card button.add:hover{background:var(--gold-dark);color:#fff;}
+.card .qty-row{display:flex;align-items:center;justify-content:space-between;margin-top:4px;background:var(--peach-soft);border-radius:var(--radius-sm);padding:4px;}
+.card .qty-row button{width:32px;height:32px;border-radius:8px;border:none;background:#fff;cursor:pointer;font-weight:800;font-size:15px;color:var(--cocoa);box-shadow:var(--shadow-sm);transition:transform .12s;}
+.card .qty-row button:active{transform:scale(.9);}
+.card .qty-row b{font-size:15px;}
+
+/* ===== CART FAB ===== */
+.cart-fab{position:fixed;bottom:22px;right:22px;background:var(--cocoa);color:#fff;border:none;padding:15px 22px;border-radius:34px;font-weight:700;box-shadow:var(--shadow-lg);cursor:pointer;z-index:60;display:flex;align-items:center;gap:8px;font-size:14px;font-family:inherit;transition:transform .15s ease;}
+.cart-fab:hover{transform:translateY(-2px);}
+.cart-fab.bump{animation:fabBump .35s ease;}
+@keyframes fabBump{0%{transform:scale(1);}35%{transform:scale(1.12);}100%{transform:scale(1);}}
+.cart-fab .dot{background:var(--gold);color:#2f1a11;border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;transition:transform .2s ease;}
+.cart-fab .dot.pulse{animation:dotPulse .4s ease;}
+@keyframes dotPulse{0%{transform:scale(1);}50%{transform:scale(1.4);background:#fff;}100%{transform:scale(1);}}
+
+/* ===== TOASTS ===== */
+#toastContainer{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:100%;max-width:360px;}
+.toast{background:var(--cocoa-dark);color:#fff;padding:12px 18px;border-radius:12px;font-size:13.5px;font-weight:600;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:8px;animation:toastIn .25s ease;max-width:90vw;text-align:center;}
+.toast.error{background:var(--red);}
+.toast.success{background:var(--green);}
+.toast.leaving{animation:toastOut .25s ease forwards;}
+@keyframes toastIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+@keyframes toastOut{from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(14px);}}
+
+/* ===== EMPTY STATES ===== */
+.empty-state{text-align:center;padding:34px 16px;color:var(--gray);background:var(--cream);border-radius:var(--radius);border:1px dashed var(--line);}
+.empty-state .glyph{font-size:38px;margin-bottom:8px;opacity:.8;}
+.empty-state p{margin:0;font-size:13.5px;font-family:var(--font-sub);}
+
+/* ===== OVERLAYS ===== */
+.overlay{position:fixed;inset:0;background:rgba(30,17,10,.55);z-index:80;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(2px);}
+.overlay.show{display:flex;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.sheet{background:var(--cream);width:100%;max-width:540px;border-radius:22px 22px 0 0;max-height:92vh;overflow-y:auto;padding:24px;animation:slideUp .25s ease;}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.sheet h2{margin-top:0;color:var(--cocoa);font-size:22px;}
+.cart-line{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;}
+.cart-line .name{flex:1;}
+.cart-line .qty-ctl{display:flex;align-items:center;gap:8px;}
+.cart-line .qty-ctl button{width:26px;height:26px;border-radius:7px;border:1px solid var(--line);background:var(--peach-soft);cursor:pointer;font-weight:700;}
+.totals{margin-top:14px;font-size:14px;}
+.totals .row{display:flex;justify-content:space-between;padding:5px 0;color:var(--gray);}
+.totals .grand{font-weight:800;font-size:17px;border-top:1.5px dashed var(--line);padding-top:10px;margin-top:6px;color:var(--cocoa-dark);}
+
+/* ===== FORMS / BUTTONS ===== */
+input,textarea,select{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:var(--radius-sm);font-size:14px;margin-bottom:12px;font-family:inherit;transition:border-color .15s;background:#fffdfb;}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold);}
+label{font-size:12px;color:var(--gray);font-weight:700;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px;}
+.btn{background:var(--cocoa);color:#fff;border:none;padding:13px 18px;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-size:14.5px;width:100%;font-family:inherit;transition:transform .12s,box-shadow .12s;}
+.btn:hover{box-shadow:var(--shadow-md);transform:translateY(-1px);}
+.btn.gold{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#2f1a11;}
+.btn.outline{background:#fff;color:var(--cocoa);border:1.5px solid var(--cocoa);}
+.btn.green{background:linear-gradient(135deg,#4a9560,var(--green));color:#fff;}
+.btn.small{width:auto;padding:8px 14px;font-size:12.5px;border-radius:8px;}
+.close-x{float:right;background:var(--peach-soft);border:none;font-size:16px;cursor:pointer;color:var(--cocoa);width:32px;height:32px;border-radius:50%;}
+
+/* ===== CHECKOUT / QR ===== */
+.step{display:flex;align-items:center;gap:10px;margin:18px 0 8px;}
+.step .num{width:26px;height:26px;border-radius:50%;background:var(--gold);color:#2f1a11;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:800;flex:none;}
+.step b{font-size:15px;color:var(--cocoa);}
+.qr-box{text-align:center;background:linear-gradient(160deg,var(--peach-soft),var(--peach));padding:20px;border-radius:var(--radius);margin:14px 0;}
+.qr-box canvas{margin:0 auto;background:#fff;padding:10px;border-radius:12px;box-shadow:var(--shadow-sm);}
+
+/* ===== ORDER / STATUS CARDS ===== */
+.order-card{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius-sm);padding:15px;margin-bottom:12px;box-shadow:var(--shadow-sm);}
+.status-pill{font-size:11px;padding:4px 12px;border-radius:14px;font-weight:800;letter-spacing:.2px;}
+.status-New{background:var(--red-soft);color:var(--red);}
+.status-Preparing{background:#fff2cf;color:#8a6d1d;}
+.status-Ready{background:var(--green-soft);color:var(--green);}
+.status-Completed{background:#e9e5df;color:#5b5148;}
+
+/* ===== KPI CARDS ===== */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:16px 0;}
+.kpi{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);padding:16px;text-align:center;box-shadow:var(--shadow-sm);}
+.kpi .val{font-size:23px;font-weight:800;color:var(--cocoa);font-family:var(--font-head);}
+.kpi .lbl{font-size:10.5px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-top:2px;}
+
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px;}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);}
+th{background:var(--peach-soft);color:var(--cocoa);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.3px;}
+tr:hover td{background:var(--peach-soft);}
+
+.starrow{font-size:24px;letter-spacing:5px;cursor:pointer;}
+.star{color:#e3d9cb;transition:color .1s;}
+.star.on{color:var(--gold);}
+.hidden{display:none !important;}
+
+.login-wrap{max-width:360px;margin:44px auto 0;}
+.login-photo{height:120px;border-radius:20px 20px 0 0;background:url('https://images.pexels.com/photos/35228372/pexels-photo-35228372.jpeg?auto=compress&cs=tinysrgb&w=800') center 25%/cover no-repeat;position:relative;}
+.login-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,16,10,.15),rgba(28,16,10,.75));border-radius:20px 20px 0 0;}
+.login-box{max-width:360px;margin:0 auto;background:var(--cream);padding:30px;border-radius:0 0 20px 20px;box-shadow:var(--shadow-md);border:1px solid var(--line);border-top:none;text-align:center;position:relative;}
+.login-box .brandmark{width:96px;height:96px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff0dd,var(--peach));display:flex;align-items:center;justify-content:center;margin:-58px auto 14px;box-shadow:var(--shadow-md),0 0 0 4px #fff;overflow:hidden;position:relative;}
+.login-box .brandmark svg{width:100%;height:100%;display:block;}
+
+.review-card{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 16px;margin-bottom:10px;box-shadow:var(--shadow-sm);}
+.review-card .stars{color:var(--gold-dark);font-size:15px;}
+.muted{color:var(--gray);font-size:12.5px;}
+
+.skel{background:linear-gradient(90deg,var(--peach-soft) 25%,var(--cream) 50%,var(--peach-soft) 75%);background-size:200% 100%;animation:skelShine 1.3s ease-in-out infinite;border-radius:12px;}
+@keyframes skelShine{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+footer.note{font-size:11.5px;color:var(--gray);text-align:center;margin-top:36px;padding:18px;border-top:1px solid var(--line);}
+.admin-topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px;}
+@media(max-width:480px){.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}.hero{padding:28px 16px 20px;}}
+</style>
+</head>
+<body>
+
+<!-- Reusable brand logo (peach circle + whisk + wordmark), recreated as SVG so it always renders crisply -->
+<svg width="0" height="0" style="position:absolute;overflow:hidden">
+  <symbol id="kaniLogo" viewBox="0 0 200 200">
+    <circle cx="100" cy="100" r="98" fill="#f8ddc8" stroke="#eeccae" stroke-width="2"/>
+    <g stroke="#4a3222" fill="none" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M92,42 C88,34 96,26 100,26 C104,26 112,34 108,42 C114,46 114,54 108,58 C104,61 96,61 92,58 C86,54 86,46 92,42 Z" fill="#4a3222" stroke="none"/>
+      <line x1="100" y1="26" x2="100" y2="18"/>
+      <path d="M84,58 C76,76 80,96 100,104 C120,96 124,76 116,58"/>
+      <path d="M91,58 C86,74 88,90 100,96 C112,90 114,74 109,58"/>
+      <path d="M100,58 L100,92"/>
+    </g>
+    <text x="100" y="132" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="30" fill="#3c2a1e" text-anchor="middle">Kani's</text>
+    <text x="100" y="152" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="14" letter-spacing="2.5" fill="#3c2a1e" text-anchor="middle">WHISK &amp; BAKES</text>
+    <text x="100" y="167" font-family="Arial,Helvetica,sans-serif" font-size="9" letter-spacing="1" fill="#7a6a5a" text-anchor="middle">Fresh. Fast. Homemade.</text>
+  </symbol>
+</svg>
+
+<header class="topbar" id="topHeader">
+  <h1>
+    <span class="brandmark"><svg viewBox="0 0 200 200"><use href="#kaniLogo"/></svg></span>
+    <span class="brandname"><b>Kani's Whisk &amp; Bakes</b><span class="sub">Fresh · Fast · Homemade · Chennai</span></span>
+  </h1>
+  <nav class="tabs">
+    <button id="navShop" class="active" onclick="showView('shop')">Shop</button>
+    <button id="navTrack" onclick="showView('track')">My Orders</button>
+    <button id="navAdmin" onclick="showView('adminGate')">Kani Login</button>
+  </nav>
+</header>
+
+<div class="hero" id="heroBanner">
+  <svg class="hero-logo" viewBox="0 0 200 200"><use href="#kaniLogo"/></svg>
+  <h2>Freshly Baked Brownies, Cakes &amp; Millet Treats Made with Real Belgian Chocolate</h2>
+  <p class="subhead">Homemade brownies, cakes, muffins &amp; healthy millet bakes — whisked fresh to order and delivered across Chennai, no shortcuts, no preservatives.</p>
+  <div class="hero-ctas">
+    <button class="btn gold" onclick="document.getElementById('menuGrid').scrollIntoView({behavior:'smooth'})">Order Now</button>
+    <button class="btn outline" style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.6);" onclick="document.getElementById('catFilters').scrollIntoView({behavior:'smooth'})">Explore Menu</button>
+  </div>
+  <div class="chips">
+    <span class="chip">🍫 30+ Varieties</span>
+    <span class="chip">🌾 No Maida, No Sugar options</span>
+    <span class="chip">📲 Order on WhatsApp</span>
+  </div>
+  <div class="trust-badges">
+    <div class="tb"><b>★ 4.8</b>Rating</div>
+    <div class="tb"><b>500+</b>Happy Customers</div>
+    <div class="tb"><b>100%</b>Homemade</div>
+    <div class="tb"><b>Same-Day</b>Delivery</div>
+  </div>
+</div>
+
+<main>
+
+  <!-- SHOP VIEW -->
+  <div id="view-shop">
+    <div class="trust-section reveal">
+      <div class="trust-grid">
+        <div class="trust-card"><div class="icon">😊</div><div class="val">500+</div><div class="lbl">Happy Customers</div></div>
+        <div class="trust-card"><div class="icon">📦</div><div class="val">1,200+</div><div class="lbl">Orders Delivered</div></div>
+        <div class="trust-card"><div class="icon">🏠</div><div class="val">100%</div><div class="lbl">Homemade</div></div>
+        <div class="trust-card"><div class="icon">🚴</div><div class="val">Same-Day</div><div class="lbl">Delivery in Chennai</div></div>
+      </div>
+    </div>
+
+    <div class="about-section reveal">
+      <div class="about-panel"><svg viewBox="0 0 200 200"><use href="#kaniLogo"/></svg></div>
+      <div>
+        <h3>About Kani</h3>
+        <p>Kani's Whisk &amp; Bakes started in a home kitchen in Chennai with a simple idea — bake the way family recipes taught her, with real butter, real chocolate and no shortcuts. Every brownie, cake and cookie here is still mixed, baked and packed by hand, in small batches, the same way it started.</p>
+        <p>No fancy factory, no preservatives — just a home baker who loves what she does, delivering fresh bakes to your doorstep across Chennai.</p>
+      </div>
+    </div>
+
+    <div class="section-title">📸 Fresh From Kani's Kitchen</div>
+    <div class="gallery-strip" id="galleryStrip"></div>
+    <div class="section-title">🍽️ Menu</div>
+    <div class="cat-filters" id="catFilters"></div>
+    <div class="grid" id="menuGrid"></div>
+  </div>
+
+  <!-- TRACK VIEW -->
+  <div id="view-track" class="hidden">
+    <div class="section-title">📦 Find your order</div>
+    <label>Enter Order ID (was shown after checkout / sent to you on WhatsApp)</label>
+    <input id="trackOrderId" placeholder="e.g. KBS-1042">
+    <button class="btn" onclick="trackOrder()">Check Status</button>
+    <div id="trackResult" style="margin-top:16px;"></div>
+  </div>
+
+  <!-- ADMIN GATE -->
+  <div id="view-adminGate" class="hidden">
+    <div class="login-wrap">
+      <div class="login-photo"></div>
+      <div class="login-box">
+        <div class="brandmark"><svg viewBox="0 0 200 200"><use href="#kaniLogo"/></svg></div>
+        <h2 style="margin:0 0 4px;color:var(--cocoa);">Kani's Dashboard</h2>
+        <p class="muted" style="margin-bottom:16px;">Orders · P&amp;L · Billing · Reviews</p>
+        <label style="text-align:left;">Password</label>
+        <input type="password" id="adminPass" placeholder="Enter password">
+        <button class="btn" onclick="tryAdminLogin()">Login</button>
+        <p class="muted" style="margin-top:14px;">Default password: <b>kani123</b> — change it in the code (CONFIG.adminPassword).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+  <div id="view-admin" class="hidden">
+    <div class="admin-topbar">
+      <div class="cat-filters" style="padding-bottom:0;">
+        <button class="active" data-atab="orders" onclick="setAdminTab('orders')">📦 Orders</button>
+        <button data-atab="pnl" onclick="setAdminTab('pnl')">📊 P&amp;L</button>
+        <button data-atab="billing" onclick="setAdminTab('billing')">🧾 Billing</button>
+        <button data-atab="reviews" onclick="setAdminTab('reviews')">⭐ Reviews</button>
+        <button data-atab="market" onclick="setAdminTab('market')">🔎 Market Intel</button>
+      </div>
+      <button class="btn small outline" style="border-color:var(--red);color:var(--red);" onclick="adminLogout()">Logout</button>
+    </div>
+
+    <div id="admin-orders">
+      <div class="kpi-row" id="orderKpis"></div>
+      <div id="ordersList"></div>
+    </div>
+
+    <div id="admin-pnl" class="hidden">
+      <div class="section-title">📊 Profit &amp; Loss</div>
+      <div class="kpi-row" id="pnlKpis"></div>
+      <h3 style="color:var(--cocoa);">Add Expense</h3>
+      <label>Description</label><input id="expDesc" placeholder="e.g. Cocoa powder, packaging box">
+      <label>Category</label>
+      <select id="expCat"><option>Ingredients</option><option>Packaging</option><option>Delivery</option><option>Utilities</option><option>Marketing</option><option>Other</option></select>
+      <label>Amount (₹)</label><input id="expAmt" type="number" placeholder="0">
+      <button class="btn gold" onclick="addExpense()">Add Expense</button>
+      <h3 style="color:var(--cocoa);">Expense Log</h3>
+      <table><thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th></th></tr></thead><tbody id="expenseTable"></tbody></table>
+    </div>
+
+    <div id="admin-billing" class="hidden">
+      <div class="section-title">🧾 Billing / Invoices</div>
+      <label>Select Order</label>
+      <select id="billOrderSelect" onchange="renderInvoice()"></select>
+      <div id="invoiceBox"></div>
+    </div>
+
+    <div id="admin-reviews" class="hidden">
+      <div class="section-title">⭐ Customer Ratings &amp; Reviews</div>
+      <div class="kpi-row" id="reviewKpis"></div>
+      <div id="reviewsList"></div>
+    </div>
+
+    <div id="admin-market" class="hidden">
+      <div class="section-title">🔎 Chennai Brownie Market Intel</div>
+      <p class="muted" style="margin-top:-6px;">Reference only — competitor prices &amp; photos from Swiggy, Zomato &amp; official sites across 55 Chennai bakeries/cafes. Not shown to customers. Photos belong to the listed restaurants, not Kani's.</p>
+      <input id="marketSearch" placeholder="Filter by restaurant or item name..." oninput="renderMarketIntel()">
+      <div class="kpi-row" id="marketKpis"></div>
+      <div class="grid" id="marketGrid" style="margin-top:10px;"></div>
+    </div>
+  </div>
+
+</main>
+
+<button class="cart-fab" id="cartFab" onclick="openCart()">🛒 Cart <span class="dot" id="cartCount">0</span> · ₹<span id="cartTotalMini">0</span></button>
+
+<div class="fab-left-stack">
+  <a class="fab-round fab-whatsapp" href="https://wa.me/919667210829?text=Hi%20Kani%2C%20I%27d%20like%20to%20place%20an%20order." target="_blank" rel="noopener" title="Chat on WhatsApp">💬</a>
+  <button class="fab-round fab-top" id="scrollTopFab" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+</div>
+
+<!-- CART OVERLAY -->
+<div class="overlay" id="cartOverlay">
+  <div class="sheet">
+    <button class="close-x" onclick="closeOverlay('cartOverlay')">✕</button>
+    <h2>Your Cart</h2>
+    <div id="cartLines"></div>
+    <div class="totals" id="cartTotals"></div>
+    <button class="btn gold" style="margin-top:16px;" onclick="goToCheckout()">Proceed to Checkout →</button>
+  </div>
+</div>
+
+<!-- CHECKOUT OVERLAY -->
+<div class="overlay" id="checkoutOverlay">
+  <div class="sheet">
+    <button class="close-x" onclick="closeOverlay('checkoutOverlay')">✕</button>
+    <h2>Checkout</h2>
+    <div class="step"><div class="num">1</div><b>Your details</b></div>
+    <label>Name</label><input id="custName" placeholder="Your name">
+    <label>Phone (WhatsApp number)</label><input id="custPhone" placeholder="10-digit mobile number">
+    <label>Delivery / Pickup Address</label><textarea id="custAddress" rows="2" placeholder="Address or 'Self pickup'"></textarea>
+    <label>Notes (optional)</label><input id="custNotes" placeholder="e.g. less sweet, no nuts">
+
+    <div class="step"><div class="num">2</div><b>Pay via UPI QR</b></div>
+    <div class="qr-box">
+      <canvas id="qrCanvas"></canvas>
+      <p style="margin:10px 0 0;font-size:13.5px;">Scan &amp; pay <b>₹<span id="qrAmount">0</span></b> to <b id="qrUpiName"></b></p>
+      <p class="muted">UPI ID: <span id="qrUpiId"></span></p>
+    </div>
+
+    <div class="step"><div class="num">3</div><b>Confirm your order</b></div>
+    <p class="muted">After paying, tap the button below — it opens WhatsApp with your order pre-filled so Kani gets notified instantly. Please attach your payment screenshot in WhatsApp.</p>
+    <button class="btn green" onclick="confirmAndSendOrder()">✅ I've Paid — Send Order on WhatsApp</button>
+  </div>
+</div>
+
+<!-- ORDER CONFIRMATION OVERLAY -->
+<div class="overlay" id="confirmOverlay">
+  <div class="sheet">
+    <button class="close-x" onclick="closeOverlay('confirmOverlay')">✕</button>
+    <h2>🎉 Order Placed!</h2>
+    <p>Your order ID is <b id="confOrderId"></b>. Save this to track status and rate your order later.</p>
+    <p class="muted">If WhatsApp didn't open automatically, <a id="waFallbackLink" href="#" target="_blank">tap here to send it manually</a>.</p>
+    <button class="btn outline" onclick="closeOverlay('confirmOverlay')">Back to Menu</button>
+  </div>
+</div>
+
+<footer class="note">🥄 Prototype build for Kani's Whisk &amp; Bakes · Data stored locally in this browser (demo mode) · Configure UPI ID in CONFIG at top of script.</footer>
+
+<div id="toastContainer"></div>
+
+<script>
+/* ============ CONFIG — Kani should edit these ============ */
+const CONFIG = {
+  businessName: "Kani's Whisk & Bakes",
+  upiId: "kani@upi",              // TODO: replace with Kani's real UPI ID
+  upiPayeeName: "Kani's Whisk & Bakes",
+  whatsappNumber: "919667210829",  // From Instagram bio (@kaniswhiskandbakes) — WhatsApp Orders number
+  adminPassword: "kani123"         // TODO: change this
+};
+
+/* ============ MENU DATA ============ */
+/* Photos: free-to-use stock photos (Pexels License — free for commercial use, no attribution required) */
+const PIC = id => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=400`;
+const BROWNIE_PICS = [25595974, 5386663, 5386659, 34802628, 12322407, 1111813, 1684880, 12342219];
+
+const MENU = [
+  {id:"b1", cat:"Brownies", name:"Classic Fudge Brownie", desc:"Rich, gooey dark chocolate fudge brownie", price:79, img:"/images/brownie_tray.jpg", emoji:"🍫", veg:true},
+  {id:"b2", cat:"Brownies", name:"Choco Chip Brownie", desc:"Studded with molten chocolate chips", price:85, img:PIC(5386663), emoji:"🍪", veg:true},
+  {id:"b3", cat:"Brownies", name:"Walnut Brownie", desc:"Classic fudge brownie loaded with crunchy walnuts", price:89, img:PIC(5386659), emoji:"🌰", veg:true},
+  {id:"b4", cat:"Brownies", name:"Overload Brownie", desc:"Extra dark couverture chocolate, dense & crackling top", price:95, img:PIC(34802628), emoji:"🍫", veg:true},
+  {id:"b5", cat:"Brownies", name:"Cheesecake Swirl Brownie", desc:"Fudgy brownie swirled with creamy cheesecake", price:99, img:PIC(12322407), emoji:"🧀", veg:true},
+  {id:"b6", cat:"Brownies", name:"Salted Caramel Brownie", desc:"Gooey caramel core with a hint of sea salt", price:99, img:PIC(1111813), emoji:"🧂", veg:true},
+  {id:"b7", cat:"Brownies", name:"Nutella Hazelnut Brownie", desc:"Swirled with hazelnut chocolate spread", price:105, img:PIC(1684880), emoji:"🌰", veg:true},
+  {id:"b8", cat:"Brownies", name:"Biscoff Brownie", desc:"Topped with crushed Biscoff cookies & spread", price:109, img:PIC(12342219), emoji:"🍪", veg:true},
+  {id:"b9", cat:"Brownies", name:"Mocha Coffee Brownie", desc:"Fudgy brownie with coffee-chocolate ganache", price:99, img:PIC(25595974), emoji:"☕", veg:true},
+  {id:"b10", cat:"Brownies", name:"Oreo Crumble Brownie", desc:"Loaded with crushed Oreo cookies", price:95, img:PIC(12342219), emoji:"🍪", veg:true},
+  {id:"b11", cat:"Brownies", name:"Millionaire Brownie", desc:"Chocolate brownie + buttery caramel + dark truffle layer", price:115, img:PIC(1111813), emoji:"💰", veg:true},
+  {id:"b12", cat:"Brownies", name:"Peanut Butter Brownie", desc:"Swirled with rich peanut butter", price:95, img:PIC(5386663), emoji:"🥜", veg:true},
+  {id:"b13", cat:"Brownies", name:"Cookie Dough Brownie", desc:"Fudgy base topped with eggless cookie dough chunks", price:105, img:PIC(5386659), emoji:"🍪", veg:true},
+  {id:"b14", cat:"Brownies", name:"Red Velvet Brownie", desc:"Cocoa-red velvet base with cream cheese frosting", price:105, img:PIC(6133313), emoji:"❤️", veg:true},
+  {id:"b15", cat:"Brownies", name:"Coffee Rum Brownie", desc:"Fudgy brownie with a coffee-rum flavour kick", price:109, img:PIC(34802628), emoji:"☕", veg:true},
+  {id:"b16", cat:"Brownies", name:"Brownie Jar (Trifle Style)", desc:"Layered brownie, chocolate mousse & choco crumbs in a jar", price:149, img:PIC(1684880), emoji:"🥣", veg:true},
+  {id:"b17", cat:"Brownies", name:"Almond Blondie", desc:"Crunchy almonds with a melted chocolate centre", price:105, img:"/images/almond_brownie_squares.jpg", emoji:"🌰", veg:true},
+  {id:"b18", cat:"Brownies", name:"Assorted Brownie Box (6 pc)", desc:"Chef's mix of 6 bestselling brownie flavors", price:499, img:PIC(1666065), emoji:"🎁", veg:true},
+  {id:"b19", cat:"Brownies", name:"Ferrero Rocher Brownie", desc:"Fudgy brownie topped with crushed Ferrero Rocher", price:129, img:"https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/s3ufshkc4qornqanssxe", emoji:"🍫", veg:true},
+  {id:"b20", cat:"Brownies", name:"Mexican Spiced Brownie", desc:"Dark chocolate brownie with a warm cinnamon-chilli kick", price:99, img:"https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/mou1sr3qd6ihqelt4ahm", emoji:"🌶️", veg:true},
+  {id:"b21", cat:"Brownies", name:"Tiramisu Brownie", desc:"Coffee-soaked brownie layered with mascarpone cream", price:115, img:"https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/4/22/f328efb4-fdbb-49f9-838f-e0abdb455de5_209a16d7-9c01-4ddb-9a4f-c8e87c90b084.jpg", emoji:"☕", veg:true},
+  {id:"b22", cat:"Brownies", name:"Kit Kat Crunch Brownie", desc:"Fudgy brownie loaded with Kit Kat pieces", price:109, img:"https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/iwkt8wgq14bh2lpsl5v9", emoji:"🍪", veg:true},
+
+  {id:"c1", cat:"Cakes", name:"Chocolate Truffle Cake (500g)", desc:"Moist chocolate sponge, dark truffle cream", price:449, img:PIC(34802628), emoji:"🎂", veg:true},
+  {id:"c2", cat:"Cakes", name:"Red Velvet Cake (500g)", desc:"Classic red velvet, cream cheese frosting", price:499, img:PIC(6133313), emoji:"🎂", veg:true},
+  {id:"c3", cat:"Cakes", name:"Pineapple Sponge Cake (500g)", desc:"Light pineapple sponge, whipped cream", price:429, img:PIC(19910617), emoji:"🍍", veg:true},
+  {id:"c4", cat:"Cakes", name:"Rum-Soaked Plum Cake", desc:"Rich fruit & nut plum cake, festive favourite", price:459, img:"/images/plum_cake_loaf.jpg", emoji:"🍇", veg:true},
+  {id:"c5", cat:"Cakes", name:"Bakery Style Soft Vanilla Cake (500g)", desc:"Ultra-soft vanilla sponge layered with silky fresh cream, bakery-style finish", price:399, img:PIC(4078187), emoji:"🍰", veg:true},
+
+  {id:"k1", cat:"Cookies", name:"Choco Chunk Cookies (box of 6)", desc:"Crisp-edged, chewy centre cookies", price:169, img:PIC(8081574), emoji:"🍪", veg:true},
+  {id:"k2", cat:"Cookies", name:"Double Chocolate Cookies (box of 6)", desc:"Cocoa dough loaded with choco chips", price:179, img:PIC(5846049), emoji:"🍪", veg:true},
+
+  {id:"j1", cat:"Jars & Others", name:"Choco Lava Cup Cake", desc:"Warm molten centre chocolate cake", price:99, img:PIC(2223247), emoji:"🌋", veg:true},
+  {id:"j2", cat:"Jars & Others", name:"Belgian Chocolate Mousse Cup", desc:"Silky Belgian dark chocolate mousse", price:119, img:PIC(1684880), emoji:"🍮", veg:true},
+
+  {id:"m1", cat:"Muffins", name:"Double Chocolate Muffin", desc:"Soft cocoa muffin loaded with choco chips", price:69, img:PIC(131899), emoji:"🧁", veg:true},
+  {id:"m2", cat:"Muffins", name:"Banana Muffin", desc:"Moist banana muffin, a customer favourite", price:69, img:PIC(7316), emoji:"🧁", veg:true},
+  {id:"m3", cat:"Muffins", name:"Choco Chip Tea Cake Slice", desc:"Homestyle loaf cake studded with choco chips", price:59, img:PIC(806363), emoji:"🍰", veg:true},
+
+  {id:"h1", cat:"Healthy & Millet", name:"Healthy Ragi Butter Biscuits", desc:"No maida, no refined sugar — pure homemade goodness", price:89, img:"/images/cookies_plate.jpg", emoji:"🍪", veg:true},
+  {id:"h2", cat:"Healthy & Millet", name:"Ragi Triple Chocolate Brownie", desc:"Soft, fudgy brownie made with ragi — guilt-free indulgence", price:99, img:PIC(5386659), emoji:"🌾", veg:true},
+  {id:"h3", cat:"Healthy & Millet", name:"Ragi Butter Salt Cookies", desc:"Made with the goodness of ragi, butter & love", price:89, img:"/images/nut_cookies.jpg", emoji:"🍪", veg:true},
+  {id:"h4", cat:"Healthy & Millet", name:"Oats & Nuts Cookies", desc:"Wholesome oats cookies loaded with mixed nuts, no refined sugar", price:89, img:PIC(5846049), emoji:"🥣", veg:true},
+  {id:"h5", cat:"Healthy & Millet", name:"Karuppu Kavuni Black Rice Brownie", desc:"Traditional Tamil black rice baked into a fudgy, antioxidant-rich brownie", price:99, img:"https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/3/10/51b53bf3-cf06-47d7-b4d2-72c5c82d62fb_575c6853-4c37-4625-99be-ef83354bc303.jpg", emoji:"🌾", veg:true},
+  {id:"h6", cat:"Healthy & Millet", name:"Millet Marble Brownie", desc:"Marbled millet brownie — wholesome grains meet chocolate fudge", price:95, img:"https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2024/12/18/5f924d3f-5127-49bb-bcb1-68c3d96fd170_c957568f-2f25-44fc-9fe4-68e531f9b00e.jpg", emoji:"🌾", veg:true},
+];
+
+/* ============ MENU ENRICHMENT: ratings + badges (prototype, plausible static values) ============ */
+const BESTSELLER_IDS = new Set(["b1","b4","c1","k1","c5"]);
+const NEW_IDS = new Set(["b19","b21","h5","h6"]);
+function hashRating(str){
+  let h = 0; for(let i=0;i<str.length;i++) h = (h*31 + str.charCodeAt(i)) % 1000;
+  return (4.3 + (h/1000)*0.6).toFixed(1); // 4.3 - 4.9
+}
+MENU.forEach(m=>{
+  if(m.rating===undefined) m.rating = parseFloat(hashRating(m.id));
+  if(m.badge===undefined){
+    if(BESTSELLER_IDS.has(m.id)) m.badge = "Bestseller";
+    else if(NEW_IDS.has(m.id)) m.badge = "New";
+    else if(m.cat==="Healthy & Millet") m.badge = "Healthy";
+    else m.badge = null;
+  }
+});
+
+/* ============ STATE (localStorage-backed demo persistence) ============ */
+const LS = {
+  cart: "kbs_cart", orders: "kbs_orders", reviews: "kbs_reviews",
+  expenses: "kbs_expenses", session: "kbs_admin_session", orderSeq: "kbs_order_seq"
+};
+function load(key, fallback){ try{ return JSON.parse(localStorage.getItem(key)) ?? fallback; }catch(e){ return fallback; } }
+function save(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+
+let cart = load(LS.cart, {});
+let orders = load(LS.orders, []);
+let reviews = load(LS.reviews, []);
+let expenses = load(LS.expenses, []);
+let activeCat = "All";
+let adminTab = "orders";
+
+const CAT_ICONS = {
+  "All":"🍽️", "Brownies":"🍫", "Cakes":"🎂", "Cookies":"🍪",
+  "Jars & Others":"🍮", "Muffins":"🧁", "Healthy & Millet":"🌾"
+};
+
+/* ============ TOASTS ============ */
+function showToast(msg, type){
+  const container = document.getElementById("toastContainer");
+  const t = document.createElement("div");
+  t.className = "toast" + (type ? " " + type : "");
+  t.innerHTML = msg;
+  container.appendChild(t);
+  setTimeout(()=>{
+    t.classList.add("leaving");
+    setTimeout(()=> t.remove(), 250);
+  }, 2400);
+}
+
+/* ============ HEADER SCROLL SHADOW + SCROLL-TO-TOP FAB ============ */
+window.addEventListener("scroll", ()=>{
+  const h = document.getElementById("topHeader");
+  if(h) h.classList.toggle("scrolled", window.scrollY > 8);
+  const top = document.getElementById("scrollTopFab");
+  if(top) top.classList.toggle("show", window.scrollY > 400);
+});
+
+/* ============ SCROLL-REVEAL (lightweight IntersectionObserver) ============ */
+function initScrollReveal(){
+  const els = document.querySelectorAll(".reveal");
+  if(!els.length) return;
+  if(!("IntersectionObserver" in window)){ els.forEach(el=>el.classList.add("in")); return; }
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){ entry.target.classList.add("in"); io.unobserve(entry.target); }
+    });
+  }, {threshold:.15});
+  els.forEach(el=>io.observe(el));
+}
+
+/* ============ GALLERY STRIP (real dish photos) ============ */
+function renderGalleryStrip(){
+  const el = document.getElementById("galleryStrip");
+  if(!el) return;
+  const seen = new Set();
+  const picks = [];
+  for(const m of MENU){
+    if(seen.has(m.img)) continue;
+    seen.add(m.img);
+    picks.push(m);
+    if(picks.length>=12) break;
+  }
+  el.innerHTML = picks.map(m=>`<img src="${m.img}" alt="${m.name}" loading="lazy" title="${m.name}">`).join("");
+}
+
+/* ============ VIEW SWITCHING ============ */
+function showView(v){
+  ["shop","track","adminGate","admin"].forEach(id=>{
+    document.getElementById("view-"+id).classList.toggle("hidden", id!==v);
+  });
+  ["navShop","navTrack","navAdmin"].forEach(id=>document.getElementById(id).classList.remove("active"));
+  document.getElementById("cartFab").classList.toggle("hidden", v!=="shop");
+  document.getElementById("heroBanner").classList.toggle("hidden", v!=="shop");
+  if(v==="shop") document.getElementById("navShop").classList.add("active");
+  if(v==="track") document.getElementById("navTrack").classList.add("active");
+  if(v==="adminGate"||v==="admin") document.getElementById("navAdmin").classList.add("active");
+  if(v==="admin") renderAdmin();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ============ MENU RENDER ============ */
+function renderCategories(){
+  const cats = ["All", ...new Set(MENU.map(m=>m.cat))];
+  const el = document.getElementById("catFilters");
+  el.innerHTML = cats.map(c=>`<button class="${c===activeCat?'active':''}" onclick="filterCat('${c}')">${CAT_ICONS[c]||''} ${c}</button>`).join("");
+}
+function filterCat(c){ activeCat = c; renderCategories(); renderMenu(); }
+function renderMenu(){
+  const items = MENU.filter(m => activeCat==="All" || m.cat===activeCat);
+  document.getElementById("menuGrid").innerHTML = items.map(m=>{
+    const qty = cart[m.id] || 0;
+    const cornerBadge = m.badge ? `<span class="corner-badge ${m.badge.toLowerCase()}">${m.badge==='Bestseller'?'🔥 ':m.badge==='New'?'✨ ':'🌾 '}${m.badge}</span>` : '';
+    return `<div class="card">
+      ${cornerBadge}
+      <div class="photo"><img src="${m.img}" alt="${m.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;height:100%;font-size:34px;background:linear-gradient(160deg,var(--peach-soft),var(--peach));\\'>${m.emoji}</div>'"></div>
+      <h3>${m.name}</h3>
+      <p class="desc">${m.desc}</p>
+      <div class="badges"><span class="badge veg">🟢 Veg</span><span class="badge">${m.cat}</span></div>
+      <div class="rating">★ ${m.rating}</div>
+      <div class="price">₹${m.price}</div>
+      ${qty===0
+        ? `<button class="add" onclick="addToCart('${m.id}')">Add to Cart</button>`
+        : `<div class="qty-row"><button onclick="changeQty('${m.id}',-1)">−</button><b>${qty}</b><button onclick="changeQty('${m.id}',1)">+</button></div>`
+      }
+    </div>`;
+  }).join("") || "<p class='muted'>No items in this category.</p>";
+}
+function addToCart(id){
+  cart[id] = (cart[id]||0)+1; save(LS.cart, cart); renderMenu(); updateCartFab(true);
+  const item = MENU.find(m=>m.id===id);
+  showToast(`${item.emoji} ${item.name} added to cart`, "success");
+}
+function changeQty(id, delta){
+  cart[id] = (cart[id]||0)+delta;
+  if(cart[id]<=0) delete cart[id];
+  save(LS.cart, cart); renderMenu(); updateCartFab(delta>0); renderCartSheet();
+}
+function cartTotal(){
+  return Object.entries(cart).reduce((sum,[id,qty])=>{
+    const item = MENU.find(m=>m.id===id); return sum + (item? item.price*qty : 0);
+  },0);
+}
+function cartItemCount(){ return Object.values(cart).reduce((a,b)=>a+b,0); }
+function updateCartFab(bump){
+  document.getElementById("cartCount").innerText = cartItemCount();
+  document.getElementById("cartTotalMini").innerText = cartTotal();
+  if(bump){
+    const fab = document.getElementById("cartFab");
+    const dot = document.getElementById("cartCount");
+    fab.classList.remove("bump"); dot.classList.remove("pulse");
+    void fab.offsetWidth;
+    fab.classList.add("bump"); dot.classList.add("pulse");
+    setTimeout(()=>{ fab.classList.remove("bump"); dot.classList.remove("pulse"); }, 450);
+  }
+}
+
+/* ============ CART SHEET ============ */
+function openCart(){ renderCartSheet(); document.getElementById("cartOverlay").classList.add("show"); }
+function closeOverlay(id){ document.getElementById(id).classList.remove("show"); }
+function renderCartSheet(){
+  const entries = Object.entries(cart);
+  const linesEl = document.getElementById("cartLines");
+  if(entries.length===0){
+    linesEl.innerHTML = "<div class='empty-state'><div class='glyph'>🛒</div><p>Your cart is empty. Add some brownies!</p></div>";
+    document.getElementById("cartTotals").innerHTML = "";
+    return;
+  }
+  linesEl.innerHTML = entries.map(([id,qty])=>{
+    const item = MENU.find(m=>m.id===id);
+    return `<div class="cart-line">
+      <div class="name">${item.emoji} ${item.name}<br><span class="muted">₹${item.price} each</span></div>
+      <div class="qty-ctl">
+        <button onclick="changeQty('${id}',-1)">−</button><b>${qty}</b><button onclick="changeQty('${id}',1)">+</button>
+      </div>
+      <div style="width:60px;text-align:right;font-weight:700;">₹${item.price*qty}</div>
+    </div>`;
+  }).join("");
+  const subtotal = cartTotal();
+  const packaging = entries.length>0 ? 20 : 0;
+  const grand = subtotal + packaging;
+  document.getElementById("cartTotals").innerHTML = `
+    <div class="row"><span>Subtotal</span><span>₹${subtotal}</span></div>
+    <div class="row"><span>Packaging</span><span>₹${packaging}</span></div>
+    <div class="row grand"><span>Total</span><span>₹${grand}</span></div>`;
+}
+
+/* ============ CHECKOUT ============ */
+function goToCheckout(){
+  if(cartItemCount()===0){ showToast("Your cart is empty.", "error"); return; }
+  closeOverlay('cartOverlay');
+  document.getElementById("checkoutOverlay").classList.add("show");
+  const total = cartTotal() + 20;
+  document.getElementById("qrAmount").innerText = total;
+  document.getElementById("qrUpiName").innerText = CONFIG.upiPayeeName;
+  document.getElementById("qrUpiId").innerText = CONFIG.upiId;
+  const upiString = `upi://pay?pa=${encodeURIComponent(CONFIG.upiId)}&pn=${encodeURIComponent(CONFIG.upiPayeeName)}&am=${total}&cu=INR&tn=${encodeURIComponent('Order at '+CONFIG.businessName)}`;
+  const canvas = document.getElementById("qrCanvas");
+  QRCode.toCanvas(canvas, upiString, {width:180, margin:1, color:{dark:"#4a2c1e"}}, function(err){ if(err) console.error(err); });
+}
+
+function nextOrderId(){
+  let seq = load(LS.orderSeq, 1000);
+  seq += 1; save(LS.orderSeq, seq);
+  return "KBS-"+seq;
+}
+
+function confirmAndSendOrder(){
+  const name = document.getElementById("custName").value.trim();
+  const phone = document.getElementById("custPhone").value.trim();
+  const address = document.getElementById("custAddress").value.trim();
+  const notes = document.getElementById("custNotes").value.trim();
+  if(!name || !phone || !address){ showToast("Please fill your name, phone, and address/pickup note.", "error"); return; }
+  if(cartItemCount()===0){ showToast("Your cart is empty.", "error"); return; }
+
+  const items = Object.entries(cart).map(([id,qty])=>{
+    const item = MENU.find(m=>m.id===id);
+    return {id, name:item.name, price:item.price, qty};
+  });
+  const subtotal = cartTotal();
+  const packaging = 20;
+  const total = subtotal + packaging;
+  const orderId = nextOrderId();
+
+  const order = {
+    id: orderId, status: "New", items, customer:{name,phone,address,notes},
+    subtotal, packaging, total, createdAt: new Date().toISOString(),
+    rating: null, review: null
+  };
+  orders.unshift(order); save(LS.orders, orders);
+
+  let msg = `*New Order - ${CONFIG.businessName}*%0A`;
+  msg += `Order ID: ${orderId}%0A`;
+  msg += `Name: ${name}%0APhone: ${phone}%0AAddress: ${address}%0A`;
+  if(notes) msg += `Notes: ${notes}%0A`;
+  msg += `%0A*Items:*%0A`;
+  items.forEach(it=> msg += `${it.qty} x ${it.name} - ₹${it.price*it.qty}%0A`);
+  msg += `%0APackaging: ₹${packaging}%0A*Total: ₹${total}*%0A%0A✅ Payment done via UPI QR (screenshot attached below).`;
+
+  const waLink = `https://wa.me/${CONFIG.whatsappNumber}?text=${msg}`;
+  document.getElementById("waFallbackLink").href = waLink;
+  document.getElementById("confOrderId").innerText = orderId;
+
+  cart = {}; save(LS.cart, cart); renderMenu(); updateCartFab();
+
+  closeOverlay('checkoutOverlay');
+  document.getElementById("confirmOverlay").classList.add("show");
+  showToast(`🎉 Order ${orderId} placed!`, "success");
+  window.open(waLink, "_blank");
+}
+
+/* ============ TRACK ORDER + RATING ============ */
+function trackOrder(){
+  const id = document.getElementById("trackOrderId").value.trim().toUpperCase();
+  const order = orders.find(o=>o.id===id);
+  const el = document.getElementById("trackResult");
+  if(!order){ el.innerHTML = "<div class='empty-state'><div class='glyph'>🔍</div><p>No order found with that ID.</p></div>"; return; }
+  let html = `<div class="order-card">
+    <div style="display:flex;justify-content:space-between;">
+      <b>${order.id}</b><span class="status-pill status-${order.status}">${order.status}</span>
+    </div>
+    <p class="muted">${new Date(order.createdAt).toLocaleString()}</p>
+    <p>${order.items.map(i=>`${i.qty} x ${i.name}`).join(", ")}</p>
+    <p><b>Total: ₹${order.total}</b></p>`;
+  if(order.status==="Completed"){
+    if(order.rating){
+      html += `<p>Your rating: ${"★".repeat(order.rating)}${"☆".repeat(5-order.rating)}</p>`;
+      if(order.review) html += `<p class="muted">"${order.review}"</p>`;
+    } else {
+      html += `<div id="rateBox">
+        <p><b>Rate your order:</b></p>
+        <div class="starrow" id="starRow"></div>
+        <textarea id="reviewText" rows="2" placeholder="Tell us what you thought (optional)"></textarea>
+        <button class="btn gold" onclick="submitRating('${order.id}')">Submit Rating</button>
+      </div>`;
+    }
+  }
+  html += `</div>`;
+  el.innerHTML = html;
+  if(order.status==="Completed" && !order.rating) renderStars(0);
+}
+let selectedRating = 0;
+function renderStars(sel){
+  selectedRating = sel;
+  const row = document.getElementById("starRow");
+  if(!row) return;
+  row.innerHTML = [1,2,3,4,5].map(i=>`<span class="star ${i<=sel?'on':''}" onclick="renderStars(${i})">★</span>`).join("");
+}
+function submitRating(orderId){
+  if(selectedRating===0){ showToast("Please select a star rating.", "error"); return; }
+  const order = orders.find(o=>o.id===orderId);
+  order.rating = selectedRating;
+  order.review = document.getElementById("reviewText").value.trim();
+  save(LS.orders, orders);
+  showToast("Thanks for rating your order! ⭐", "success");
+  trackOrder();
+}
+
+/* ============ ADMIN ============ */
+function tryAdminLogin(){
+  const pass = document.getElementById("adminPass").value;
+  if(pass === CONFIG.adminPassword){
+    sessionStorage.setItem(LS.session, "1");
+    showView("admin");
+    showToast("Welcome back, Kani! 👋", "success");
+  } else {
+    showToast("Incorrect password.", "error");
+  }
+}
+function adminLogout(){ sessionStorage.removeItem(LS.session); showView("shop"); }
+function setAdminTab(tab){
+  adminTab = tab;
+  ["orders","pnl","billing","reviews","market"].forEach(t=>{
+    document.getElementById("admin-"+t).classList.toggle("hidden", t!==tab);
+  });
+  document.querySelectorAll("[data-atab]").forEach(b=>b.classList.toggle("active", b.dataset.atab===tab));
+  renderAdmin();
+}
+function renderAdmin(){
+  if(adminTab==="orders") renderAdminOrders();
+  if(adminTab==="pnl") renderPnl();
+  if(adminTab==="billing") renderBillingSelect();
+  if(adminTab==="reviews") renderReviewsTab();
+  if(adminTab==="market") renderMarketIntel();
+}
+
+function renderAdminOrders(){
+  orders = load(LS.orders, []);
+  const newC = orders.filter(o=>o.status==="New").length;
+  const prepC = orders.filter(o=>o.status==="Preparing").length;
+  const readyC = orders.filter(o=>o.status==="Ready").length;
+  const doneC = orders.filter(o=>o.status==="Completed").length;
+  document.getElementById("orderKpis").innerHTML = `
+    <div class="kpi"><div class="val">${newC}</div><div class="lbl">New</div></div>
+    <div class="kpi"><div class="val">${prepC}</div><div class="lbl">Preparing</div></div>
+    <div class="kpi"><div class="val">${readyC}</div><div class="lbl">Ready</div></div>
+    <div class="kpi"><div class="val">${doneC}</div><div class="lbl">Completed</div></div>`;
+
+  const statuses = ["New","Preparing","Ready","Completed"];
+  document.getElementById("ordersList").innerHTML = orders.length ? orders.map(o=>{
+    const nextStatus = statuses[statuses.indexOf(o.status)+1];
+    return `<div class="order-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <b>${o.id}</b><span class="status-pill status-${o.status}">${o.status}</span>
+      </div>
+      <p class="muted">${new Date(o.createdAt).toLocaleString()} · ${o.customer.name} · ${o.customer.phone}</p>
+      <p>${o.items.map(i=>`${i.qty} x ${i.name}`).join(", ")}</p>
+      <p><b>Total: ₹${o.total}</b> ${o.customer.address? '· '+o.customer.address:''}</p>
+      ${o.customer.notes? `<p class="muted">Note: ${o.customer.notes}</p>`:''}
+      <div style="display:flex;gap:8px;margin-top:6px;">
+        ${nextStatus ? `<button class="btn small green" onclick="advanceOrder('${o.id}')">Mark as ${nextStatus}</button>` : ''}
+      </div>
+    </div>`;
+  }).join("") : "<div class='empty-state'><div class='glyph'>📦</div><p>No orders yet. New orders will appear here.</p></div>";
+}
+function advanceOrder(id){
+  const order = orders.find(o=>o.id===id);
+  const statuses = ["New","Preparing","Ready","Completed"];
+  const idx = statuses.indexOf(order.status);
+  if(idx < statuses.length-1) order.status = statuses[idx+1];
+  save(LS.orders, orders);
+  showToast(`${order.id} marked as ${order.status}`, "success");
+  renderAdminOrders();
+}
+
+/* ---- P&L ---- */
+function addExpense(){
+  const desc = document.getElementById("expDesc").value.trim();
+  const cat = document.getElementById("expCat").value;
+  const amt = parseFloat(document.getElementById("expAmt").value);
+  if(!desc || !amt || amt<=0){ showToast("Enter a valid description and amount.", "error"); return; }
+  expenses.push({id:"E"+Date.now(), date:new Date().toISOString(), desc, cat, amount:amt});
+  save(LS.expenses, expenses);
+  document.getElementById("expDesc").value=""; document.getElementById("expAmt").value="";
+  showToast("Expense added.", "success");
+  renderPnl();
+}
+function deleteExpense(id){ expenses = expenses.filter(e=>e.id!==id); save(LS.expenses, expenses); renderPnl(); }
+function renderPnl(){
+  expenses = load(LS.expenses, []); orders = load(LS.orders, []);
+  const revenue = orders.filter(o=>o.status==="Completed").reduce((s,o)=>s+o.total,0);
+  const totalExpense = expenses.reduce((s,e)=>s+e.amount,0);
+  const profit = revenue - totalExpense;
+  document.getElementById("pnlKpis").innerHTML = `
+    <div class="kpi"><div class="val">₹${revenue}</div><div class="lbl">Revenue</div></div>
+    <div class="kpi"><div class="val">₹${totalExpense}</div><div class="lbl">Expenses</div></div>
+    <div class="kpi"><div class="val" style="color:${profit>=0?'var(--green)':'var(--red)'}">₹${profit}</div><div class="lbl">Net Profit</div></div>
+    <div class="kpi"><div class="val">${orders.length}</div><div class="lbl">Total Orders</div></div>`;
+  document.getElementById("expenseTable").innerHTML = expenses.slice().reverse().map(e=>`
+    <tr><td>${new Date(e.date).toLocaleDateString()}</td><td>${e.desc}</td><td>${e.cat}</td><td>₹${e.amount}</td>
+    <td><button class="btn small outline" onclick="deleteExpense('${e.id}')">Delete</button></td></tr>`).join("") || "<tr><td colspan='5' class='muted'>No expenses logged yet.</td></tr>";
+}
+
+/* ---- Billing ---- */
+function renderBillingSelect(){
+  orders = load(LS.orders, []);
+  const sel = document.getElementById("billOrderSelect");
+  sel.innerHTML = orders.map(o=>`<option value="${o.id}">${o.id} — ${o.customer.name} — ₹${o.total}</option>`).join("") || "<option>No orders yet</option>";
+  renderInvoice();
+}
+function renderInvoice(){
+  const sel = document.getElementById("billOrderSelect");
+  const order = orders.find(o=>o.id===sel.value);
+  const box = document.getElementById("invoiceBox");
+  if(!order){ box.innerHTML = "<p class='muted'>No order selected.</p>"; return; }
+  box.innerHTML = `
+    <div class="order-card" id="printableInvoice">
+      <h3 style="color:var(--cocoa);margin-top:0;">${CONFIG.businessName} — Invoice</h3>
+      <p class="muted">Order ID: ${order.id} · ${new Date(order.createdAt).toLocaleString()}</p>
+      <p>Billed to: <b>${order.customer.name}</b> · ${order.customer.phone}<br>${order.customer.address}</p>
+      <table><thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Amount</th></tr></thead>
+      <tbody>${order.items.map(i=>`<tr><td>${i.name}</td><td>${i.qty}</td><td>₹${i.price}</td><td>₹${i.price*i.qty}</td></tr>`).join("")}</tbody></table>
+      <div class="totals">
+        <div class="row"><span>Subtotal</span><span>₹${order.subtotal}</span></div>
+        <div class="row"><span>Packaging</span><span>₹${order.packaging}</span></div>
+        <div class="row grand"><span>Total</span><span>₹${order.total}</span></div>
+      </div>
+    </div>
+    <button class="btn outline" style="margin-top:10px;" onclick="window.print()">🖨️ Print / Save as PDF</button>`;
+}
+
+/* ---- Reviews ---- */
+function renderReviewsTab(){
+  orders = load(LS.orders, []);
+  const rated = orders.filter(o=>o.rating);
+  const avg = rated.length ? (rated.reduce((s,o)=>s+o.rating,0)/rated.length).toFixed(1) : "—";
+  document.getElementById("reviewKpis").innerHTML = `
+    <div class="kpi"><div class="val">${avg}</div><div class="lbl">Average Rating</div></div>
+    <div class="kpi"><div class="val">${rated.length}</div><div class="lbl">Total Reviews</div></div>`;
+  document.getElementById("reviewsList").innerHTML = rated.length ? rated.map(o=>`
+    <div class="review-card">
+      <div class="stars">${"★".repeat(o.rating)}${"☆".repeat(5-o.rating)}</div>
+      <p style="margin:4px 0;">${o.review || "<span class='muted'>No written review</span>"}</p>
+      <p class="muted">${o.customer.name} · Order ${o.id} · ${new Date(o.createdAt).toLocaleDateString()}</p>
+    </div>`).join("") : "<div class='empty-state'><div class='glyph'>⭐</div><p>No reviews yet. They'll show up here once customers rate their orders.</p></div>";
+}
+
+/* ---- Market Intel (admin-only competitor reference, not customer-facing) ---- */
+/* Row = [restaurant, item, price, rating, votes, source, imageUrl] */
+const MARKET_DATA = [["Amadora Gourmet Ice Cream","Choc Brownie",178.09,5,411,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2024/9/26/aeb2677a-cf58-4891-8134-8008da52f15d_46f357e6-bc51-4c15-8926-ae11eade2a59.jpg"],["Amadora Gourmet Ice Cream","Chocolate Brownie Chocobar",251.43,5,410,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2024/9/26/b32b053d-faf8-4a08-ad85-9f016e66ac5a_f6e681ed-010e-45ea-b745-5e5dd3a5aac9.jpg"],["The Brownie Studio","Classic Brownie Box",530,4.8,518,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/9774be1c154cc73866bc78be33dd07aa"],["Amadora Gourmet Ice Cream","Chocolate Brownie Sundae",418,4.7,450,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2024/9/26/08d31329-7cc7-406e-88b1-a637382f0de8_05e18dc6-5569-4960-a348-7deeeb55be27.jpg"],["Theobroma","Overload Brownie [1 Piece]",130,4.7,441,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/b7af9f0d9b90d4d834770267945d2497"],["The Creams","Hot Chocolate Brownie",120,4.4,388,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/c94781e29098e13cd23206f5f35d9fac"],["Sandy's Chocolate Laboratory","Triple Chocolate Brownie",304,4.6,283,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/1/29/deed2a38-bb6d-4c22-9721-007fde4c2da8_2476ed27-dca5-4def-827b-bd538134c107.jpg"],["The Brownie Studio","Mini Classic Brownie Box",275,4.4,341,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/7/22/52988c63-3bf3-4353-a90b-e54e04d45154_c1f64d14-802a-4af0-b06d-54ade789377e.jpg"],["The Noodle Theory","Ferrero Rocher Brownie",199,4.8,208,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/s3ufshkc4qornqanssxe"],["Truly Scrumptious","Triple Chocolate Brownie",140,4.6,239,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/znqic0b3yfcwb17f7dlc"],["Chai Waale","Eggless Brownie",80,4.6,214,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/kkyywmm8plnkzinjv6f8"],["Old Madras Baking Company","Chocolate Walnut Brownie",205.71,4.5,210,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/9/24/627ed761-9cf2-480e-b5f5-005389e5a541_b1fd2a5a-a275-45c0-81c9-78a91934fe95.jpg"],["Theobroma","Eggless Millionaire Brownie [1 Piece]",130,4.7,160,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/51d62eed198e67bbaac8077d71441b69"],["Theobroma","Choco Chip Brownie [1 Piece]",110,4.7,152,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/916618f0702cb2309ee07d1ac5e4ce9b"],["Shree Mithai","Walnut Brownie",103,4.7,129,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/4d43fbe4e3566043a5a066cba7eaab7f"],["The Belgian Waffle Co.","Almond Brownie Waffle",195,4.5,158,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2024/3/12/3e06d222-1987-4927-a6ef-a2d008d3c5ee_405f8986-db76-4be6-b2db-af8abf938043.png_compressed"],["The Noodle Theory","Kit Kat Brownie",199,4.2,223,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/iwkt8wgq14bh2lpsl5v9"],["The Brownie Studio","Medium Assorted Brownie Box [12 Pcs]",645,4.7,102,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/9/13/af4d54ec-4c64-4ce5-8bc1-aa0de1f256f9_310f762e-1690-43ff-98fa-bee154c2ec8b.jpg"],["Juice Pump","CHOCO BROWNIE",309.15,4.8,78,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/7/28/27eeba4c-0879-4741-909e-51f8e132e131_52d3fe39-880f-4012-ab53-f9b28f179fc0.JPG"],["The Brown Hut","Triple Chocolate Brownie",150,4.5,94,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/10096dc8dea27905e3463778d2f09167"],["Bread Boutique By Brew Room","Botique Brownie",110,4.9,61,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/a97e7cdc251fa8189ddf98248a4f640d"],["Brownie Heaven","Triple Chocolate Brownie",205,4.9,58,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/aanwivlygeozqa8ganfi"],["Truly Scrumptious","Nutella Brownie",160,3.4,353,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/wpovvtopot3djdt60obb"],["Fresh Baked Goodness","Chocolate chunk brownie",110,4.3,93,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/vubjoltgr05qffkf41te"],["The Brown Hut","Overload Brownie",140,4.7,62,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/a0a5178f8e868c139eafb615c091dde1"],["Roll Baby Roll","Brownie",140,4.6,68,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/5/4/cc80e50a-6fd0-4673-982e-aa53cba8acce_623235d4-f334-491e-b278-319b3f7376ad.jpg"],["Brownie Heaven","Assorted Brownie Box 3pc",275,4.7,56,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2024/12/16/6479dd15-04b6-4e07-8812-3c4e956e5192_2f93f5e0-3a21-4aa3-a78c-b5516964a78f.jpg"],["Louis Burger","Chocolate Brownie",129,4.5,63,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/lq8zkfoh0dl3t6nc1scn"],["Therapy Dessert Cart","TRIPLE CHOCOLATE BROWNIE",259,4.5,62,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/11/13/f1b6d93d-0aae-4ddc-b678-ec275f6e9123_e41282bf-8b3d-4c60-a149-8792c46ddba8.jpg"],["The Brown Hut","Nutella Brownie",150,4.3,65,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/11ebf6306109985d02c2f6518385c3e5"],["Shree Mithai","Biscoff Chocolate Brownie",169,4.7,42,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2024/12/20/d142664a-5309-490b-ab89-0aa3e7314227_f55d2914-eeb1-41df-841f-feb220b2d448.jpeg_compressed"],["Batter","Triple Chocolate Brownie",200,4.7,41,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/4/27/077d5760-2af9-4279-8cab-99f99cd0ddd6_bd41e245-e7ea-4345-81ab-63de53cdc80d.jpeg"],["Shree Mithai","Chocolate Ganache Brownie",169,4.5,45,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2024/12/20/0a459d35-df9b-4025-a5e4-52d9b43ba535_d07ae638-f2c2-4625-bf68-1f2c494fa594.jpeg"],["Cakes by Brownie Heaven","Assorted Brownie Box 3Pcs",275,4.7,36,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/3/31/2d985ef9-bd3a-4339-b078-fcc2512c4826_75b279ac-10b7-43c7-95e5-535983718ab8.jpg"],["California Burrito","Double Coco Brownie (1 PC)",119,4.3,50,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/4f76d5db6f89017c7dc87148d35da347"],["Hot Breads","American Fudge Walnut Brownie",182,4.6,32,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/6/23/66ae666e-d97d-4afc-8f4f-419df4cf3e69_60fbea2f-c163-4864-a2d6-a31e4bb2e96d.jpg"],["Bread Boutique By Brew Room","Eggless Brownie",110,4.5,31,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/8e8f55b8d72a71a1bb3bb90f70a98b84"],["Dumont Creamery","Dutchmen's Choco Brownie Ice Cream",119,4.3,35,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2024/11/19/63c9b0e3-b1b6-4eb8-9ba8-bb4a26c47034_3eb0fd38-c00b-41cf-954f-0c16c1d48255.jpg"],["Madras Coffee House","Brownie",70,4.7,25,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/makpjmmlvme263vbqfi3"],["Piece of joy","Couverture chocolate brownie",129,4.6,27,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/2/12/76fd24e7-fdf9-4c32-9f81-cae53c092716_b37db2b0-b542-41ab-8232-406cb9a9a5e7.jpg"],["Brownie Heaven","Assorted Brownie Box 6pcs",500,4.9,20,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2024/9/5/881494be-6881-46bc-bc9a-7b2947b118fa_2ead205b-7d01-43d9-aad1-c89bfea436cd.jpg"],["Chai Kings","Chocolate Brownie",60,4.8,21,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/6/6/7d929d21-9798-4cd8-8c68-54bd1d81fd1d_4a6f840b-0191-4adf-9d73-be572a85e461.png_compressed"],["Bakingo","Eggless Double Choco Brownie",109,4.8,21,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/5/15/253873b8-5019-49ca-b195-1eb41690187f_b844ad9d-c703-4044-ad70-23987ffc1524.jpg"],["CakeZone Patisserie","Choco Chip Brownie - 1Pc",144,4.2,32,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/1/3/6950eeb9-7c67-4d8d-85fa-bcc909390c03_63f77384-da34-4d17-a97b-bac4cff98614.jpg"],["Lassi Shop","Nutella Brownie",158,5,16,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2024/8/17/041e2d95-3d14-4c24-af23-020fce526b3c_2e05d5e2-3dff-4c31-89d8-6996e61c16a0.JPG"],["Millet Maagic Meal","Millet Marble Brownie[60 Gms]",145,4.9,16,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2024/12/18/5f924d3f-5127-49bb-bcb1-68c3d96fd170_c957568f-2f25-44fc-9fe4-68e531f9b00e.jpg"],["T Shop - Tea, Snacks & More","Brownie",89,4.2,25,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/2f4fbe928fa90fa56ffe4b62f357e8ee"],["FB Cakes","Brownie Dream Cake",190,4.6,18,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/5/26/d6e26e64-c114-47e7-8ab8-08d3ade1a60f_1e861cf0-007f-436b-bf26-73425f5502e6.jpeg"],["Bakingo","Eggless Millionaire Brownie",109,4.5,18,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/5/15/49b4fb39-8ea4-42a2-b96b-a86929038955_a712251a-7f2a-4e7e-97de-6fb0758a24a5.jpg"],["Dumont Creamery","Vanilla & Brownie Chunks Ice Cream",109,4.9,13,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/1/30/ecb7092e-e300-469a-8634-6388e3748f5d_6ede3c26-bbb4-4a4c-8313-74af3df1e62b.jpg"],["The Maple","Fudgey brownie bites tub",250,4.4,18,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/2/2/e15bc7ca-f3b1-421c-911c-1316687213c1_3beb4553-1b70-4623-9950-ee2d0e39c017.jpg"],["Kwality Wall's Ice Cream And More","Magnum Brownie Ice Cream 61 gms",66.67,4.8,13,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/4/15/989e2b08-fd0c-4797-9a67-70459dca4873_99261263-5257-4e7f-b301-e8aea7ef5103.png"],["Sweet Truth - Cake and Desserts","Walnut Brownie",129,5,11,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/4/27/713a97d0-90aa-425a-810f-5507eee08e84_dc01f7d4-df54-4c27-bf86-3c1612fd2b48.jpeg"],["Fresh Baked Goodness","Brownie Diggin' [300 Grams]",565,4.7,13,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/3/18/d1a45d47-f366-400a-96f8-e9ceb9145aa7_3691704f-5959-4a7b-a551-a9b479f671e0.png_compressed"],["Juice Pump","Brownie Falooda",295.65,5,10,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/7/28/2ce40c94-5271-4198-973d-c9b056a24d58_d93157d2-90ee-4139-8b01-6638d3315fd9.JPG"],["Rollsking","Fudge Brownie",119,4.7,12,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/4/22/0deb701e-b249-4190-801f-2725b7f26a02_56d3aa22-b07a-45ae-8958-e1b9b5c1d732.jpg"],["Therapy Dessert Cart","DOUBLE CHOCOLATE BROWNIE",239,4.7,12,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/11/13/ab451153-c7b2-420f-9b88-2376beedc9d2_6718bca3-161a-48c4-a2fe-44a503f7d012.jpg"],["Sugar Brush","Triple Chocolate Brownie",195,4.3,15,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/2/26/a5b54361-4131-4b6d-abb1-d62acab5641b_a540e284-ccfb-49c6-8bdb-faeeefb4aa99.jpg"],["Ibaco","Choco Cookies & Brownie Wonder",276.98,4.9,10,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/6/17/3142a583-9f8f-4a32-8310-e92509be6b1b_9ffdbd93-90ec-4525-b92c-fb36c895f171.jpg"],["Davara Coffee","Chocolate Fusion Brownie",99,4.6,11,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2024/7/5/63e3cee0-e40e-49c2-b4a8-7103614b76a7_4d36e113-31f5-429a-92bb-1711cdf198ae.jpg"],["Kwality Wall's Ice Cream And More","Cornetto Choco Brownie 110ml",52.38,4.6,11,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2024/8/26/e01abe03-28bd-45e8-b433-9e3b1e39e86a_114e9f15-5809-4ba2-ba42-be7b069de196.jpg"],["Sweet Truth - Cake and Desserts","Choco Chip Brownie",129,3.7,19,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/4/27/4d2ae37a-3411-4f79-bb41-504031a37dae_2c1a8cd3-793f-45d7-ba6c-e74ffc7deed3.jpeg"],["Batter","Half Baked Brownie Batter",145,4.8,8,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/4/27/3e3236b4-c000-45c9-8d06-3794cfcc727d_b45c0425-d0d3-4586-ab5b-b165d4b799cb.jpeg"],["Hot Breads","Belgian Triple Chocolate Brownie",192,4.3,11,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/9/24/38746155-cf71-4ab2-9755-a258ed8d8a7a_a638e61d-aabc-4b47-a9bc-01d72f70dcb1.jpg"],["Cakes by Brownie Heaven","Assorted Brownie Box 6Pcs",500,5,7,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/3/31/64abcb46-2083-4b95-b903-e0884aa0caf5_78c93c29-a613-4221-a383-a0483e2f16ad.jpg"],["Maison Indulgence","Triple Chocolate Brownie",300,5,6,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/5/15/c95ca234-8ac8-4eab-a17b-45bfa0e8f136_6a50bab3-97c5-4a29-b08e-a58fb65a11a4.png"],["FB Cakes","Brownie with Triple Chocolate Sauce ( Buy 1 Get 1 Free )",169,4.3,9,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/8/1/c8a224a4-fa04-432c-b928-0ddb5c8f8c26_05c5c9cc-d315-4d20-9401-4628a30380bb.jpeg"],["The Belgian Waffle Co.","Choco Brownie Sundae (L)",160,3.7,12,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/811ae72fb321c8d62a0246cd1f80ffaf"],["CakeZone Patisserie","Walnut Brownie",139,5,5,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/11/12/1610db11-3e1b-4323-8c5d-713eeec48cb0_5720f2a9-e86b-44ee-9819-c9e29856c2c8.png_compressed"],["Karupatti House","Karuppu Kavuni/Black Rice Brownie",123.81,5,4,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/3/10/51b53bf3-cf06-47d7-b4d2-72c5c82d62fb_575c6853-4c37-4625-99be-ef83354bc303.jpg"],["The D'OH Co.","Nutella Fudge Brownie",270,5,4,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/7/19/0a1a3348-1a8a-46a2-af82-a3eb3568696c_dd03f172-9d8a-401e-a8e7-af2ef1c058ad.JPG"],["Lassi Shop","Mexican Brownie",139,5,4,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/mou1sr3qd6ihqelt4ahm"],["NOTO Ice Cream and Desserts","Chocolate Brownie Sugar Free Bar [70 ml]",119,4.2,6,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/3/8/87979785-f031-46ac-a2d5-296dcdd6b9d4_4956b35b-f531-4b8b-98f1-2d6394ca22db.jpg_compressed"],["The Maple","Tiramisu brownie",180,5,3,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/4/22/f328efb4-fdbb-49f9-838f-e0abdb455de5_209a16d7-9c01-4ddb-9a4f-c8e87c90b084.jpg"],["Millet Maagic Meal","Millet Coffee Brownies",145,4.1,5,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2024/12/18/6db5c495-6463-4bf7-aa41-656b6b2bdb1f_5a1cbf2d-a447-43f2-8f4f-6a406e4e7185.jpg"],["Sri Vishalakshi Milk Center","Brownie",95,4.1,5,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/8/2/c1511bf2-dcde-4ed9-816c-efcc5b101b41_8d87e100-b403-4449-ab84-ae30f214c5b7.jpg"],["Fresh Baked Goodness","Biscoff Brownie",155,3.9,5,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/5/7/617ca396-0639-4f30-8197-e4bfc1b86b30_d0061d05-788b-4309-a06c-5203a28753bd.jpg"],["Maison Indulgence","Hazelnut Brownie",300,4.7,3,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/5/15/838b4887-78ce-4d60-a79e-2a300ea3dcff_c7791f0d-fac9-4983-9833-09e0667a5f6d.png"],["The D'OH Co.","Caramel Fudge Brownie",270,3.5,6,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/7/19/c336dda8-4030-43d9-a800-4b20801eb7a6_17c2847e-8a51-4e13-9d1c-4b716341ddd2.jpg"],["Baskin Robbins - Ice Cream Desserts","Choco Fudge Brownie",110,5,2,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/9/13/2ab113cb-f0c8-4035-8ff7-07bd699c0bb7_d0ef2ef1-890d-4cdb-a7e0-3694f7fa7bd3.jpg"],["The D'OH Co.","Belgian Chocolate Brownie",280,3.8,4,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/7/19/790fc6e5-aad8-4aca-874d-a4bc79ceb9a6_3c946c55-1f91-442f-96b7-5f70446756a0.jpg"],["The Creams","Brownie Cheese Cake (250 Gms)",499,4,2,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/11/30/6cbd9e0f-9b00-43aa-9006-ba634c31a362_45267859-1504-46c1-9135-5de882b49677.jpeg"],["Drunken Monkey","Brownie",259,5,1,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/a110489a98eed3a1bf42e881ec88f605"],["Baskin Robbins - Ice Cream Desserts","Choco Walnut Brownie",135,4,1,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/11/27/276df695-c448-49f5-9182-2a1f594409bb_ed0aa3e1-3d44-431d-af26-73c9efcb89b1.jpg"],["Karupatti House","Raggi Brownie",114.29,null,null,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/3/10/73fe7d47-225c-4fe2-90ea-3ff5ac22d8f5_9635af6a-3351-46e5-ab5d-040ae22b04fb.jpg"],["Rollsking","Chicken Seekh Kebab Roll + Fudge Brownie",348,null,null,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/12/20/3e1823b9-0fb6-4c44-8db0-4cec38053d16_f5d8ad55-38b1-4bb1-9c4e-e9972550b89c.jpg"],["Rolling Fresh","Fudge Brownie ( Eggless )",119,null,null,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2026/7/16/752d57ae-0d0e-4d6b-b2e7-77dc7ff5666b_53260999-4627-4d87-b0cf-d97724785f97.png"],["Sri Vishalakshi Milk Center","White Brownie",95,null,null,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/8/5/ba55068a-30be-49a4-aa6a-2cf3bb51323c_8fb2656e-c1a7-4978-979c-a5d4a418b2b0.jpeg"],["The Maple","Smores brownie",180,null,null,"Swiggy","https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/FOOD_CATALOG/IMAGES/CMS/2025/1/24/1ec582a0-cab0-433c-886f-0f1cfd11b3c4_7529c63d-5297-402f-b37e-c1b5865ae7fd.jpg"],["Happie Returns","Choco Chip Brownie – 6 Pieces",500,null,null,"Official website","https://www.happiereturns.com/wp-content/uploads/2020/04/Homemade-Chocolate-Chip-Brownies-30-1-480x480-1_012c012c1.jpg"],["Happie Returns","Classic Brownie – 6 Pieces",450,null,null,"Official website","https://www.happiereturns.com/wp-content/uploads/2020/04/1456176242492_012c012c1.jpeg"],["Happie Returns","Nutty Brownie – 6 Pieces",520,null,null,"Official website","https://www.happiereturns.com/wp-content/uploads/2020/04/nutty-fudge-brownies-4_012c012c1.jpg"]];
+function renderMarketIntel(){
+  const q = (document.getElementById("marketSearch")?.value || "").trim().toLowerCase();
+  const rows = MARKET_DATA.filter(r => !q || r[0].toLowerCase().includes(q) || r[1].toLowerCase().includes(q));
+  const restaurants = new Set(MARKET_DATA.map(r=>r[0])).size;
+  const prices = MARKET_DATA.map(r=>r[2]).filter(p=>p);
+  const avgPrice = prices.length ? Math.round(prices.reduce((a,b)=>a+b,0)/prices.length) : 0;
+  document.getElementById("marketKpis").innerHTML = `
+    <div class="kpi"><div class="val">${MARKET_DATA.length}</div><div class="lbl">Items Tracked</div></div>
+    <div class="kpi"><div class="val">${restaurants}</div><div class="lbl">Bakeries/Cafes</div></div>
+    <div class="kpi"><div class="val">₹${avgPrice}</div><div class="lbl">Avg. Item Price</div></div>
+    <div class="kpi"><div class="val">${rows.length}</div><div class="lbl">Matching Filter</div></div>`;
+  document.getElementById("marketGrid").innerHTML = rows.map(r=>{
+    const [rest,name,price,rating,votes,src,img] = r;
+    return `<div class="card" style="padding:12px;gap:6px;">
+      <div class="photo" style="height:110px;"><img src="${img}" alt="${name}" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;height:100%;font-size:24px;background:var(--peach-soft);\\'>🍫</div>'"></div>
+      <h3 style="font-size:14px;">${name}</h3>
+      <p class="desc" style="min-height:auto;">${rest} · ${src}</p>
+      <div class="badges"><span class="badge">${price?('₹'+price):'—'}</span>${rating?`<span class="badge veg">★ ${rating}${votes?` (${votes})`:''}</span>`:''}</div>
+    </div>`;
+  }).join("") || "<p class='muted'>No matching items.</p>";
+}
+
+/* ============ INIT ============ */
+renderCategories();
+renderMenu();
+renderGalleryStrip();
+updateCartFab();
+showView("shop");
+initScrollReveal();
+</script>
+</body>
+</html>
