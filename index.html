@@ -45,7 +45,7 @@ nav.tabs button.active{background:#fff;color:var(--cocoa);border-color:#fff;box-
   position:relative;
   background:
     linear-gradient(180deg,rgba(28,16,10,.62) 0%,rgba(28,16,10,.72) 55%,rgba(28,16,10,.88) 100%),
-    url('https://images.pexels.com/photos/35228372/pexels-photo-35228372.jpeg?auto=compress&cs=tinysrgb&w=1400') center 30%/cover no-repeat;
+    url('https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?auto=format&fit=crop&w=1600&q=80') center center/cover no-repeat;
   padding:52px 22px 34px;text-align:center;border-bottom:1px solid var(--line);color:#fff;
 }
 .hero .hero-logo{width:88px;height:88px;margin:0 auto 16px;filter:drop-shadow(0 6px 18px rgba(0,0,0,.45));animation:heroFloat 4.5s ease-in-out infinite;}
@@ -135,7 +135,7 @@ main{max-width:1000px;margin:0 auto;padding:24px 20px;padding-bottom:100px;}
 .card .qty-row b{font-size:15px;}
 
 /* ===== CART FAB ===== */
-.cart-fab{position:fixed;bottom:22px;right:22px;background:var(--cocoa);color:#fff;border:none;padding:15px 22px;border-radius:34px;font-weight:700;box-shadow:var(--shadow-lg);cursor:pointer;z-index:60;display:flex;align-items:center;gap:8px;font-size:14px;font-family:inherit;transition:transform .15s ease;}
+.cart-fab{position:fixed;bottom:22px;right:22px;background:rgba(62,39,35,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#fff;border:1px solid rgba(255,255,255,.18);padding:15px 22px;border-radius:34px;font-weight:700;box-shadow:var(--shadow-lg);cursor:pointer;z-index:60;display:flex;align-items:center;gap:8px;font-size:14px;font-family:inherit;transition:transform .15s ease;}
 .cart-fab:hover{transform:translateY(-2px);}
 .cart-fab.bump{animation:fabBump .35s ease;}
 @keyframes fabBump{0%{transform:scale(1);}35%{transform:scale(1.12);}100%{transform:scale(1);}}
@@ -195,9 +195,10 @@ label{font-size:12px;color:var(--gray);font-weight:700;display:block;margin-bott
 .order-card{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius-sm);padding:15px;margin-bottom:12px;box-shadow:var(--shadow-sm);}
 .status-pill{font-size:11px;padding:4px 12px;border-radius:14px;font-weight:800;letter-spacing:.2px;}
 .status-New{background:var(--red-soft);color:var(--red);}
-.status-Preparing{background:#fff2cf;color:#8a6d1d;}
-.status-Ready{background:var(--green-soft);color:var(--green);}
-.status-Completed{background:#e9e5df;color:#5b5148;}
+.status-Baking{background:#fff2cf;color:#8a6d1d;}
+.status-Packed{background:#e6ecf5;color:#3a5a8c;}
+.status-OutforDelivery{background:var(--peach-soft);color:var(--gold-dark);}
+.status-Delivered{background:var(--green-soft);color:var(--green);}
 
 /* ===== KPI CARDS ===== */
 .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:16px 0;}
@@ -266,6 +267,7 @@ footer.note{font-size:11.5px;color:var(--gray);text-align:center;margin-top:36px
 
 <div class="hero" id="heroBanner">
   <svg class="hero-logo" viewBox="0 0 200 200"><use href="#kaniLogo"/></svg>
+  <p style="margin:0 0 6px;font-family:var(--font-head);font-style:italic;font-weight:600;letter-spacing:.4px;color:var(--gold);font-size:14px;">Bake. Love. Repeat.</p>
   <h2>Freshly Baked Brownies, Cakes &amp; Millet Treats Made with Real Belgian Chocolate</h2>
   <p class="subhead">Homemade brownies, cakes, muffins &amp; healthy millet bakes — whisked fresh to order and delivered across Chennai, no shortcuts, no preservatives.</p>
   <div class="hero-ctas">
@@ -299,7 +301,7 @@ footer.note{font-size:11.5px;color:var(--gray);text-align:center;margin-top:36px
     </div>
 
     <div class="about-section reveal">
-      <div class="about-panel"><svg viewBox="0 0 200 200"><use href="#kaniLogo"/></svg></div>
+      <div class="about-panel" style="padding:0;overflow:hidden;"><img src="https://images.unsplash.com/photo-1587248720327-8eb72564be1e?auto=format&fit=crop&w=800&q=80" alt="Kani baking" style="width:100%;height:100%;min-height:180px;object-fit:cover;border-radius:var(--radius);display:block;"></div>
       <div>
         <h3>About Kani</h3>
         <p>Kani's Whisk &amp; Bakes started in a home kitchen in Chennai with a simple idea — bake the way family recipes taught her, with real butter, real chocolate and no shortcuts. Every brownie, cake and cookie here is still mixed, baked and packed by hand, in small batches, the same way it started.</p>
@@ -397,7 +399,7 @@ footer.note{font-size:11.5px;color:var(--gray);text-align:center;margin-top:36px
 <button class="cart-fab" id="cartFab" onclick="openCart()">🛒 Cart <span class="dot" id="cartCount">0</span> · ₹<span id="cartTotalMini">0</span></button>
 
 <div class="fab-left-stack">
-  <a class="fab-round fab-whatsapp" href="https://wa.me/919667210829?text=Hi%20Kani%2C%20I%27d%20like%20to%20place%20an%20order." target="_blank" rel="noopener" title="Chat on WhatsApp">💬</a>
+  <a class="fab-round fab-whatsapp" href="https://wa.me/919667210829?text=Hi%20Kani%2C%20I%27d%20like%20to%20place%20an%20order." target="_blank" rel="noopener" title="Chat on WhatsApp"><svg viewBox="0 0 32 32" width="26" height="26" fill="#fff"><path d="M16.001 3C9.096 3 3.5 8.596 3.5 15.5c0 2.42.674 4.68 1.845 6.606L3 29l7.09-2.301A12.44 12.44 0 0 0 16 28.5C22.905 28.5 28.5 22.904 28.5 16S22.905 3 16.001 3Zm7.34 17.617c-.31.87-1.532 1.594-2.508 1.804-.667.142-1.539.256-4.474-.96-3.752-1.554-6.166-5.365-6.355-5.615-.181-.25-1.517-2.019-1.517-3.85s.948-2.733 1.284-3.108c.31-.343.677-.43.902-.43.226 0 .452.002.65.012.209.01.489-.079.765.584.31.75 1.052 2.581 1.144 2.77.093.19.156.412.031.662-.125.25-.187.405-.372.624-.187.22-.393.49-.561.658-.187.187-.382.39-.164.767.218.377.968 1.598 2.078 2.588 1.428 1.273 2.632 1.667 3.008 1.855.375.187.594.156.812-.094.219-.25.937-1.09 1.187-1.464.25-.375.5-.312.844-.187.343.125 2.18 1.028 2.554 1.215.375.187.625.28.719.437.093.157.093.907-.218 1.777Z"/></svg></a>
   <button class="fab-round fab-top" id="scrollTopFab" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
 </div>
 
@@ -469,11 +471,11 @@ const BROWNIE_PICS = [25595974, 5386663, 5386659, 34802628, 12322407, 1111813, 1
 const MENU = [
   {id:"b1", cat:"Brownies", name:"Classic Fudge Brownie", desc:"Rich, gooey dark chocolate fudge brownie", price:79, img:"/images/brownie_tray.jpg", emoji:"🍫", veg:true},
   {id:"b2", cat:"Brownies", name:"Choco Chip Brownie", desc:"Studded with molten chocolate chips", price:85, img:PIC(5386663), emoji:"🍪", veg:true},
-  {id:"b3", cat:"Brownies", name:"Walnut Brownie", desc:"Classic fudge brownie loaded with crunchy walnuts", price:89, img:PIC(5386659), emoji:"🌰", veg:true},
+  {id:"b3", cat:"Brownies", name:"Walnut Brownie", desc:"Classic fudge brownie loaded with crunchy walnuts", price:89, img:"https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=600&q=80", emoji:"🌰", veg:true},
   {id:"b4", cat:"Brownies", name:"Overload Brownie", desc:"Extra dark couverture chocolate, dense & crackling top", price:95, img:PIC(34802628), emoji:"🍫", veg:true},
   {id:"b5", cat:"Brownies", name:"Cheesecake Swirl Brownie", desc:"Fudgy brownie swirled with creamy cheesecake", price:99, img:PIC(12322407), emoji:"🧀", veg:true},
   {id:"b6", cat:"Brownies", name:"Salted Caramel Brownie", desc:"Gooey caramel core with a hint of sea salt", price:99, img:PIC(1111813), emoji:"🧂", veg:true},
-  {id:"b7", cat:"Brownies", name:"Nutella Hazelnut Brownie", desc:"Swirled with hazelnut chocolate spread", price:105, img:PIC(1684880), emoji:"🌰", veg:true},
+  {id:"b7", cat:"Brownies", name:"Nutella Hazelnut Brownie", desc:"Swirled with hazelnut chocolate spread", price:105, img:"https://images.unsplash.com/photo-1611329857570-f02f340e7378?auto=format&fit=crop&w=600&q=80", emoji:"🌰", veg:true},
   {id:"b8", cat:"Brownies", name:"Biscoff Brownie", desc:"Topped with crushed Biscoff cookies & spread", price:109, img:PIC(12342219), emoji:"🍪", veg:true},
   {id:"b9", cat:"Brownies", name:"Mocha Coffee Brownie", desc:"Fudgy brownie with coffee-chocolate ganache", price:99, img:PIC(25595974), emoji:"☕", veg:true},
   {id:"b10", cat:"Brownies", name:"Oreo Crumble Brownie", desc:"Loaded with crushed Oreo cookies", price:95, img:PIC(12342219), emoji:"🍪", veg:true},
@@ -491,7 +493,7 @@ const MENU = [
   {id:"b22", cat:"Brownies", name:"Kit Kat Crunch Brownie", desc:"Fudgy brownie loaded with Kit Kat pieces", price:109, img:"https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_240,h_240/iwkt8wgq14bh2lpsl5v9", emoji:"🍪", veg:true},
 
   {id:"c1", cat:"Cakes", name:"Chocolate Truffle Cake (500g)", desc:"Moist chocolate sponge, dark truffle cream", price:449, img:PIC(34802628), emoji:"🎂", veg:true},
-  {id:"c2", cat:"Cakes", name:"Red Velvet Cake (500g)", desc:"Classic red velvet, cream cheese frosting", price:499, img:PIC(6133313), emoji:"🎂", veg:true},
+  {id:"c2", cat:"Cakes", name:"Red Velvet Cake (500g)", desc:"Classic red velvet, cream cheese frosting", price:499, img:"https://images.unsplash.com/photo-1586788680434-30d324b2d46f?auto=format&fit=crop&w=600&q=80", emoji:"🎂", veg:true},
   {id:"c3", cat:"Cakes", name:"Pineapple Sponge Cake (500g)", desc:"Light pineapple sponge, whipped cream", price:429, img:PIC(19910617), emoji:"🍍", veg:true},
   {id:"c4", cat:"Cakes", name:"Rum-Soaked Plum Cake", desc:"Rich fruit & nut plum cake, festive favourite", price:459, img:"/images/plum_cake_loaf.jpg", emoji:"🍇", veg:true},
   {id:"c5", cat:"Cakes", name:"Bakery Style Soft Vanilla Cake (500g)", desc:"Ultra-soft vanilla sponge layered with silky fresh cream, bakery-style finish", price:399, img:PIC(4078187), emoji:"🍰", veg:true},
@@ -773,12 +775,12 @@ function trackOrder(){
   if(!order){ el.innerHTML = "<div class='empty-state'><div class='glyph'>🔍</div><p>No order found with that ID.</p></div>"; return; }
   let html = `<div class="order-card">
     <div style="display:flex;justify-content:space-between;">
-      <b>${order.id}</b><span class="status-pill status-${order.status}">${order.status}</span>
+      <b>${order.id}</b><span class="status-pill ${statusClass(order.status)}">${order.status}</span>
     </div>
     <p class="muted">${new Date(order.createdAt).toLocaleString()}</p>
     <p>${order.items.map(i=>`${i.qty} x ${i.name}`).join(", ")}</p>
     <p><b>Total: ₹${order.total}</b></p>`;
-  if(order.status==="Completed"){
+  if(order.status==="Delivered"){
     if(order.rating){
       html += `<p>Your rating: ${"★".repeat(order.rating)}${"☆".repeat(5-order.rating)}</p>`;
       if(order.review) html += `<p class="muted">"${order.review}"</p>`;
@@ -793,7 +795,7 @@ function trackOrder(){
   }
   html += `</div>`;
   el.innerHTML = html;
-  if(order.status==="Completed" && !order.rating) renderStars(0);
+  if(order.status==="Delivered" && !order.rating) renderStars(0);
 }
 let selectedRating = 0;
 function renderStars(sel){
@@ -840,24 +842,20 @@ function renderAdmin(){
   if(adminTab==="market") renderMarketIntel();
 }
 
+const ORDER_STATUSES = ["New","Baking","Packed","Out for Delivery","Delivered"];
+function statusClass(s){ return "status-" + s.replace(/\s+/g,""); }
 function renderAdminOrders(){
   orders = load(LS.orders, []);
-  const newC = orders.filter(o=>o.status==="New").length;
-  const prepC = orders.filter(o=>o.status==="Preparing").length;
-  const readyC = orders.filter(o=>o.status==="Ready").length;
-  const doneC = orders.filter(o=>o.status==="Completed").length;
-  document.getElementById("orderKpis").innerHTML = `
-    <div class="kpi"><div class="val">${newC}</div><div class="lbl">New</div></div>
-    <div class="kpi"><div class="val">${prepC}</div><div class="lbl">Preparing</div></div>
-    <div class="kpi"><div class="val">${readyC}</div><div class="lbl">Ready</div></div>
-    <div class="kpi"><div class="val">${doneC}</div><div class="lbl">Completed</div></div>`;
+  document.getElementById("orderKpis").innerHTML = ORDER_STATUSES.map(s=>{
+    const c = orders.filter(o=>o.status===s).length;
+    return `<div class="kpi"><div class="val">${c}</div><div class="lbl">${s}</div></div>`;
+  }).join("");
 
-  const statuses = ["New","Preparing","Ready","Completed"];
   document.getElementById("ordersList").innerHTML = orders.length ? orders.map(o=>{
-    const nextStatus = statuses[statuses.indexOf(o.status)+1];
+    const nextStatus = ORDER_STATUSES[ORDER_STATUSES.indexOf(o.status)+1];
     return `<div class="order-card">
       <div style="display:flex;justify-content:space-between;align-items:center;">
-        <b>${o.id}</b><span class="status-pill status-${o.status}">${o.status}</span>
+        <b>${o.id}</b><span class="status-pill ${statusClass(o.status)}">${o.status}</span>
       </div>
       <p class="muted">${new Date(o.createdAt).toLocaleString()} · ${o.customer.name} · ${o.customer.phone}</p>
       <p>${o.items.map(i=>`${i.qty} x ${i.name}`).join(", ")}</p>
@@ -871,9 +869,8 @@ function renderAdminOrders(){
 }
 function advanceOrder(id){
   const order = orders.find(o=>o.id===id);
-  const statuses = ["New","Preparing","Ready","Completed"];
-  const idx = statuses.indexOf(order.status);
-  if(idx < statuses.length-1) order.status = statuses[idx+1];
+  const idx = ORDER_STATUSES.indexOf(order.status);
+  if(idx < ORDER_STATUSES.length-1) order.status = ORDER_STATUSES[idx+1];
   save(LS.orders, orders);
   showToast(`${order.id} marked as ${order.status}`, "success");
   renderAdminOrders();
@@ -894,7 +891,7 @@ function addExpense(){
 function deleteExpense(id){ expenses = expenses.filter(e=>e.id!==id); save(LS.expenses, expenses); renderPnl(); }
 function renderPnl(){
   expenses = load(LS.expenses, []); orders = load(LS.orders, []);
-  const revenue = orders.filter(o=>o.status==="Completed").reduce((s,o)=>s+o.total,0);
+  const revenue = orders.filter(o=>o.status==="Delivered").reduce((s,o)=>s+o.total,0);
   const totalExpense = expenses.reduce((s,e)=>s+e.amount,0);
   const profit = revenue - totalExpense;
   document.getElementById("pnlKpis").innerHTML = `
