@@ -1,0 +1,123 @@
+{
+  "theme": "light",
+  "typography": {
+    "headings": {
+      "font": "Playfair Display",
+      "style": "serif, elegant, high contrast",
+      "tracking": "tracking-tight",
+      "weights": ["font-semibold", "font-black"],
+      "classes": "font-serif tracking-tight"
+    },
+    "ui": {
+      "font": "Inter",
+      "style": "clean, modern, highly legible for interfaces",
+      "classes": "font-sans"
+    },
+    "body": {
+      "font": "Poppins",
+      "style": "friendly, rounded, readable",
+      "classes": "font-sans"
+    }
+  },
+  "colors": {
+    "primary": {
+      "name": "Cocoa",
+      "hex": "#3B2416",
+      "hsl": "23 46% 16%",
+      "usage": "Primary buttons, heavy text, dominant brand accents."
+    },
+    "background": {
+      "name": "Cream",
+      "hex": "#FBF3E4",
+      "hsl": "39 65% 94%",
+      "usage": "Main app background. Never pure white. A warm, appetizing base."
+    },
+    "accent": {
+      "name": "Peach",
+      "hex": "#F4B183",
+      "hsl": "24 83% 73%",
+      "usage": "Highlights, tags, secondary buttons."
+    },
+    "highlight": {
+      "name": "Subtle Gold",
+      "hex": "#D4AF37",
+      "usage": "Bestseller badges, star ratings, premium accents."
+    },
+    "card": {
+      "hex": "#FFFFFF",
+      "usage": "White cards on the cream background to create soft contrast."
+    },
+    "text": {
+      "hex": "#1A1A1A",
+      "usage": "For high-contrast readability."
+    }
+  },
+  "visual_enhancers": {
+    "corners": "Rounded-2xl (`rounded-2xl`) for product cards, images, and buttons to feel soft and welcoming.",
+    "shadows": "Soft ambient shadows. Use `shadow-lg` or a custom `shadow-[0_8px_30px_rgba(59,36,22,0.08)]` to make elements float.",
+    "borders": "1px subtle border on cards (`border-orange-900/10`) to provide crisp edges over soft shadows.",
+    "glassmorphism": "For sticky cart FAB and slide-in cart drawer. Use `backdrop-blur-xl bg-white/70 border border-white/40`."
+  },
+  "layouts": {
+    "general": "Mobile-first approach. Generous whitespace (`p-6` or `p-8`). Never center-align paragraphs.",
+    "hero_section": "Cinematic hero with tagline 'Bake. Love. Repeat.' Use image overlay (max `bg-black/40`) to maintain image visibility while ensuring text contrast. Ensure 'Playfair Display' is used for the H1 in `text-5xl md:text-6xl`.",
+    "menu_grid": "Bento-style or neat multi-column grid (`grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-8`). Overlap badges gracefully.",
+    "admin_dashboard": "High-density grid. Kanban board needs a horizontal scrolling area (`flex overflow-x-auto gap-6`) for order statuses (New → Baking → Packed → Out for Delivery → Delivered). Use compact cards for orders.",
+    "checkout_flow": "Step-by-step or clear vertical form with Shadcn components. Include UPI QR code inside a neat card."
+  },
+  "components": {
+    "hero": "HTML/Tailwind custom section with overlapping text. No Shadcn here.",
+    "product_card": "Custom card using `rounded-2xl`, image on top, badges (Bestseller, New, Eggless) positioned absolute. Quantity stepper and Add to Cart button.",
+    "cart_fab": "Sticky FAB (`fixed bottom-6 right-6`), rounded-full, glassmorphism, with a live count badge.",
+    "cart_drawer": "Shadcn `Sheet` component for slide-in from right.",
+    "checkout_form": "Shadcn `Form`, `Input`, `Checkbox`.",
+    "kanban_board": "Custom flex-col columns for each state, draggable (use HTML5 drag/drop or basic state-driven lists).",
+    "kpi_strip": "Grid of 3-4 Shadcn Cards at the top of admin."
+  },
+  "motion": {
+    "hover": "Smooth scale up on product cards (`hover:-translate-y-1 hover:shadow-xl transition-all duration-300`).",
+    "interactions": "Hover states MUST explicitly change background and text color.",
+    "toast": "Use Sonner for all notifications (Added to cart, Order placed, Status updated).",
+    "drawer": "Smooth slide in for the cart drawer."
+  },
+  "accessibility": {
+    "contrast": "Ensure text over images has sufficient contrast. Use APCA guidelines.",
+    "keyboard": "All modals, dialogs, and the cart drawer must support `ESC` to close and focus trapping.",
+    "aria": "ARIA labels required on all icon buttons (e.g., FAB, Quantity +/-, Close icons).",
+    "testing": "All interactive elements MUST include `data-testid`."
+  },
+  "media": {
+    "hero_image": {
+      "url": "https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxnb3VybWV0JTIwY2FrZSUyMGFlc3RoZXRpY3xlbnwwfHx8fDE3ODQ3MjE5ODl8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Bundt chocolate cake - cinematic and moody. Used for the Hero background."
+    },
+    "brownie": {
+      "url": "https://images.pexels.com/photos/4597835/pexels-photo-4597835.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "High-angle shot of chocolate brownies on a ceramic plate."
+    },
+    "cake": {
+      "url": "https://images.unsplash.com/photo-1549572189-dddb1adf739b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwzfHxnb3VybWV0JTIwY2FrZSUyMGFlc3RoZXRpY3xlbnwwfHx8fDE3ODQ3MjE5ODl8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Chocolate topped gourmet cake."
+    },
+    "cookie": {
+      "url": "https://images.pexels.com/photos/36446733/pexels-photo-36446733.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Tasty chocolate chip cookies paired with fresh milk."
+    }
+  },
+  "instructions_to_main_agent": [
+    "Install required fonts from Google Fonts: Playfair Display, Inter, Poppins.",
+    "Configure tailwind.config.js with the custom color palette (Cocoa, Cream, Peach) and set Cream as the default body background.",
+    "Build the customer-facing e-commerce storefront with a cinematic hero, bento-style menu grid, and slide-in cart drawer using Shadcn Sheet.",
+    "Implement the 'Order Now' flow: Multi-step checkout or single long form, UPI QR display, and WhatsApp confirmation prompt.",
+    "Build the Admin Dashboard featuring a Kanban board for order management (New -> Baking -> Packed -> Out for Delivery -> Delivered).",
+    "For the Kanban board, use a horizontal scroll layout with distinct columns. Implement drag-and-drop if possible, or standard click-to-move buttons.",
+    "Use 'Sonner' for toasts.",
+    "Include 'lucide-react' icons where necessary.",
+    "Ensure the hero image uses an overlay no darker than bg-black/40 for maximum visibility.",
+    "All components must be contained in .js files as specified.",
+    "Never center-align large blocks of text; left-align them for readability.",
+    "Do NOT apply 'transition: all' globally. Target specific properties.",
+    "Add data-testid attributes to all buttons, inputs, and interactive elements."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": "You tend to converge toward generic outputs. Avoid this. Create depth through layered design elements with z-index hierarchy. Use glass-morphism effects with backdrop filters (12-24px blur). You MUST NOT apply universal transition (e.g., transition: all). You MUST NOT center align the app container in App.css. Always use modern button styles (pill-shaped or rounded-2xl). NEVER use AI assistant emojis. Every interaction needs micro-animations. Use generous spacing (2-3x normal). DO NOT use dark colors as gradients. Use Sonner for toasts."
+}
