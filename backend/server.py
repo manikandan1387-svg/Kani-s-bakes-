@@ -13,6 +13,7 @@ from typing import List, Optional
 
 from fastapi import APIRouter, Depends, FastAPI, HTTPException, Query, Request, Response
 from motor.motor_asyncio import AsyncIOMotorClient
+from pydantic import BaseModel
 from starlette.middleware.cors import CORSMiddleware
 
 import auth as auth_utils
@@ -44,6 +45,7 @@ from models import (
     ReviewCreate,
     UserPublic,
 )
+from reconcile import parse_upi_sms
 from seed_data import seed_products, seed_reviews
 
 # ---------- Mongo ----------
@@ -547,6 +549,144 @@ async def broadcast(payload: BroadcastInput, _admin: dict = Depends(require_admi
     for p in phones:
         await send_whatsapp_mock(p, payload.message)
     return {"sent_to": len(phones), "mocked": True}
+
+
+# ---------- UPI Reconciliation ----------
+class UPIReconcileEvent(BaseModel):
+    utr: str
+    amount: float
+    payer_vpa: Optional[str] = None
+    received_at: Optional[str] = None
+
+
+class UPIReconcilePayload(BaseModel):
+    events: List[UPIReconcileEvent]
+
+
+class UPIPasteInput(BaseModel):
+    text: str
+
+
+async def _reconcile_events(events: list) -> dict:
+    """Auto-verify pending orders where UTR + total match EXACTLY."""
+    matched: list = []
+    no_match: list = []
+    already_verified: list = []
+    ambiguous: list = []
+
+    for ev in events:
+        utr = (ev["utr"] if isinstance(ev, dict) else ev.utr).strip().upper()
+        amount = float(ev["amount"] if isinstance(ev, dict) else ev.amount)
+        if not utr:
+            no_match.append({"utr": utr, "amount": amount, "reason": "empty_utr"})
+            continue
+
+        # Find all orders with this UTR (case-insensitive)
+        candidates = await db.orders.find(
+            {"upi_reference": utr}, {"_id": 0}
+        ).to_list(20)
+        if not candidates:
+            no_match.append({"utr": utr, "amount": amount, "reason": "utr_not_found"})
+            continue
+
+        # Filter by exact amount
+        amount_matches = [c for c in candidates if abs(float(c["total"]) - amount) < 0.005]
+        if not amount_matches:
+            no_match.append({
+                "utr": utr, "amount": amount, "reason": "amount_mismatch",
+                "expected_totals": [c["total"] for c in candidates],
+            })
+            continue
+
+        pending = [c for c in amount_matches if c.get("payment_status") == "pending"]
+        already = [c for c in amount_matches if c.get("payment_status") == "verified"]
+
+        if not pending and already:
+            for a in already:
+                already_verified.append({"utr": utr, "order_code": a["order_code"]})
+            continue
+
+        if len(pending) > 1:
+            ambiguous.append({
+                "utr": utr, "amount": amount,
+                "order_codes": [c["order_code"] for c in pending],
+            })
+            continue
+
+        target = pending[0]
+        now_iso = datetime.now(timezone.utc).isoformat()
+        await db.orders.update_one(
+            {"id": target["id"]},
+            {"$set": {
+                "payment_status": "verified",
+                "payment_verified_at": now_iso,
+                "payment_confirmed": True,
+                "payment_note": "Auto-verified via UPI reconciliation",
+                "updated_at": now_iso,
+            }},
+        )
+        matched.append({"utr": utr, "order_code": target["order_code"], "amount": amount})
+        await send_whatsapp_mock(
+            target["customer_phone"],
+            f"Payment received for {target['order_code']} ✅ Kani is starting your bake!",
+        )
+
+    return {
+        "matched": matched,
+        "no_match": no_match,
+        "already_verified": already_verified,
+        "ambiguous": ambiguous,
+        "summary": {
+            "matched": len(matched),
+            "no_match": len(no_match),
+            "already_verified": len(already_verified),
+            "ambiguous": len(ambiguous),
+        },
+    }
+
+
+@api.post("/webhooks/upi/reconcile")
+async def upi_webhook(request: Request, payload: UPIReconcilePayload):
+    """Public webhook — auth via shared secret in X-Webhook-Secret header.
+
+    Payload: {"events": [{"utr":"402512345678","amount":250.00,...}, ...]}
+    Wire any UPI provider (Razorpay, Cashfree) or SMS-forwarding service
+    to normalize into this shape.
+    """
+    secret_expected = os.environ.get("WEBHOOK_SECRET", "")
+    header = request.headers.get("X-Webhook-Secret", "")
+    if not secret_expected or header != secret_expected:
+        raise HTTPException(status_code=401, detail="Invalid webhook secret")
+    result = await _reconcile_events([e.model_dump() for e in payload.events])
+    logger.info("UPI webhook reconciled: %s", result["summary"])
+    return result
+
+
+@api.post("/admin/reconcile/paste")
+async def admin_reconcile_paste(payload: UPIPasteInput, _admin: dict = Depends(require_admin)):
+    """Admin-only: paste raw UPI bank SMS(es); server parses UTR + amount and reconciles."""
+    parsed = parse_upi_sms(payload.text or "")
+    if not parsed:
+        return {
+            "parsed": [],
+            "matched": [], "no_match": [], "already_verified": [], "ambiguous": [],
+            "summary": {"matched": 0, "no_match": 0, "already_verified": 0, "ambiguous": 0, "parsed": 0},
+        }
+    result = await _reconcile_events([{"utr": p["utr"], "amount": p["amount"]} for p in parsed])
+    result["parsed"] = parsed
+    result["summary"]["parsed"] = len(parsed)
+    return result
+
+
+@api.get("/admin/reconcile/config")
+async def admin_reconcile_config(request: Request, _admin: dict = Depends(require_admin)):
+    """Return the webhook URL + secret for the admin UI to display."""
+    base = str(request.base_url).rstrip("/")
+    return {
+        "webhook_url": f"{base}/api/webhooks/upi/reconcile",
+        "webhook_secret": os.environ.get("WEBHOOK_SECRET", ""),
+        "sample_payload": {"events": [{"utr": "402512345678", "amount": 250.00}]},
+    }
 
 
 app.include_router(api)

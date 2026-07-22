@@ -12,6 +12,7 @@ import ReviewsManager from "@/pages/admin/ReviewsManager";
 import ExpensesManager from "@/pages/admin/ExpensesManager";
 import BroadcastPanel from "@/pages/admin/BroadcastPanel";
 import PaymentsManager from "@/pages/admin/PaymentsManager";
+import ReconcilePanel from "@/pages/admin/ReconcilePanel";
 
 function KpiCard({ label, value, hint }) {
   return (
@@ -71,7 +72,12 @@ export default function AdminDashboard() {
         </TabsList>
 
         <TabsContent value="orders" className="mt-6"><KanbanBoard onChanged={() => setRefreshKey((k) => k + 1)} /></TabsContent>
-        <TabsContent value="payments" className="mt-6"><PaymentsManager onChanged={() => setRefreshKey((k) => k + 1)} /></TabsContent>
+        <TabsContent value="payments" className="mt-6">
+          <div className="space-y-6">
+            <ReconcilePanel onChanged={() => setRefreshKey((k) => k + 1)} />
+            <PaymentsManager onChanged={() => setRefreshKey((k) => k + 1)} />
+          </div>
+        </TabsContent>
         <TabsContent value="menu" className="mt-6"><MenuManager /></TabsContent>
         <TabsContent value="reviews" className="mt-6"><ReviewsManager /></TabsContent>
         <TabsContent value="expenses" className="mt-6"><ExpensesManager onChanged={() => setRefreshKey((k) => k + 1)} /></TabsContent>
