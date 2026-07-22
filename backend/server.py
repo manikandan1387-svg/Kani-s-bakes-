@@ -4,6 +4,7 @@ from __future__ import annotations
 from dotenv import load_dotenv
 load_dotenv()
 
+import json
 import logging
 import os
 import random
@@ -47,6 +48,12 @@ from models import (
 )
 from reconcile import parse_upi_sms
 from seed_data import seed_products, seed_reviews
+from webhooks_providers import (
+    extract_cashfree_events,
+    extract_razorpay_events,
+    verify_cashfree,
+    verify_razorpay,
+)
 
 # ---------- Mongo ----------
 mongo_url = os.environ["MONGO_URL"]
@@ -662,6 +669,60 @@ async def upi_webhook(request: Request, payload: UPIReconcilePayload):
     return result
 
 
+@api.post("/webhooks/razorpay")
+async def razorpay_webhook(request: Request):
+    """Native Razorpay webhook — no external mapper needed.
+
+    Configure in Razorpay Dashboard → Settings → Webhooks:
+      URL: this endpoint
+      Secret: value of RAZORPAY_WEBHOOK_SECRET in backend .env
+      Events: payment.captured (payment.authorized also handled)
+    Signature: X-Razorpay-Signature (HMAC-SHA256 hex of raw body).
+    """
+    raw = await request.body()
+    signature = request.headers.get("X-Razorpay-Signature", "")
+    if not verify_razorpay(raw, signature):
+        raise HTTPException(status_code=401, detail="Invalid Razorpay signature")
+    try:
+        body = json.loads(raw.decode("utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        raise HTTPException(status_code=400, detail="Invalid JSON")
+    events = extract_razorpay_events(body)
+    if not events:
+        return {"received": True, "reconciled": False, "reason": "not_a_upi_capture_event"}
+    result = await _reconcile_events(events)
+    logger.info("Razorpay webhook reconciled: %s", result["summary"])
+    return {"received": True, "reconciled": True, **result}
+
+
+@api.post("/webhooks/cashfree")
+async def cashfree_webhook(request: Request):
+    """Native Cashfree UPI Autocollect / PG webhook — no external mapper needed.
+
+    Configure in Cashfree Merchant Dashboard → Developers → Webhooks:
+      URL: this endpoint
+      Secret: value of CASHFREE_WEBHOOK_SECRET in backend .env
+      Event: PAYMENT_SUCCESS_WEBHOOK
+    Signature headers: x-webhook-signature + x-webhook-timestamp (HMAC-SHA256
+    of `timestamp + raw_body`, base64-encoded).
+    """
+    raw = await request.body()
+    signature = request.headers.get("x-webhook-signature", "") or request.headers.get("X-Webhook-Signature", "")
+    timestamp = request.headers.get("x-webhook-timestamp", "") or request.headers.get("X-Webhook-Timestamp", "")
+    if not verify_cashfree(raw, signature, timestamp):
+        raise HTTPException(status_code=401, detail="Invalid Cashfree signature")
+    try:
+        body = json.loads(raw.decode("utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        raise HTTPException(status_code=400, detail="Invalid JSON")
+    events = extract_cashfree_events(body)
+    if not events:
+        return {"received": True, "reconciled": False, "reason": "not_a_upi_success_event"}
+    result = await _reconcile_events(events)
+    logger.info("Cashfree webhook reconciled: %s", result["summary"])
+    return {"received": True, "reconciled": True, **result}
+
+
 @api.post("/admin/reconcile/paste")
 async def admin_reconcile_paste(payload: UPIPasteInput, _admin: dict = Depends(require_admin)):
     """Admin-only: paste raw UPI bank SMS(es); server parses UTR + amount and reconciles."""
@@ -680,12 +741,41 @@ async def admin_reconcile_paste(payload: UPIPasteInput, _admin: dict = Depends(r
 
 @api.get("/admin/reconcile/config")
 async def admin_reconcile_config(request: Request, _admin: dict = Depends(require_admin)):
-    """Return the webhook URL + secret for the admin UI to display."""
+    """Return the webhook URLs + secrets for the admin UI to display."""
     base = str(request.base_url).rstrip("/")
     return {
-        "webhook_url": f"{base}/api/webhooks/upi/reconcile",
-        "webhook_secret": os.environ.get("WEBHOOK_SECRET", ""),
-        "sample_payload": {"events": [{"utr": "402512345678", "amount": 250.00}]},
+        "generic": {
+            "webhook_url": f"{base}/api/webhooks/upi/reconcile",
+            "webhook_secret": os.environ.get("WEBHOOK_SECRET", ""),
+            "signature_header": "X-Webhook-Secret",
+            "sample_payload": {"events": [{"utr": "402512345678", "amount": 250.00}]},
+        },
+        "razorpay": {
+            "webhook_url": f"{base}/api/webhooks/razorpay",
+            "webhook_secret": os.environ.get("RAZORPAY_WEBHOOK_SECRET", ""),
+            "signature_header": "X-Razorpay-Signature",
+            "events": ["payment.captured"],
+            "setup_steps": [
+                "Razorpay Dashboard → Settings → Webhooks → + Add New Webhook",
+                "Paste the URL above",
+                "Paste the secret (this exact string) into 'Secret'",
+                "Enable the event: payment.captured",
+                "Save. Every UPI capture will now auto-verify the matching pending order.",
+            ],
+        },
+        "cashfree": {
+            "webhook_url": f"{base}/api/webhooks/cashfree",
+            "webhook_secret": os.environ.get("CASHFREE_WEBHOOK_SECRET", ""),
+            "signature_header": "x-webhook-signature",
+            "events": ["PAYMENT_SUCCESS_WEBHOOK"],
+            "setup_steps": [
+                "Cashfree Dashboard → Developers → Webhooks → Add Webhook",
+                "Paste the URL above",
+                "Paste the secret into 'Signature Key'",
+                "Enable the event: PAYMENT_SUCCESS_WEBHOOK",
+                "Save. UPI Autocollect payments will now auto-verify the matching pending order.",
+            ],
+        },
     }
 
 
