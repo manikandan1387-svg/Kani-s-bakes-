@@ -352,8 +352,15 @@ async def update_status(oid: str, payload: OrderStatusUpdate, _admin: dict = Dep
 
 # ---------- Reviews ----------
 @api.get("/reviews", response_model=List[Review])
-async def list_reviews(all: bool = False, _admin: Optional[dict] = None):
-    query: dict = {} if all else {"approved": True}
+async def list_reviews(request: Request, all: bool = False):
+    if all:
+        # Admin-only view of pending + approved
+        user = await get_current_user(request)
+        if user.get("role") != "admin":
+            raise HTTPException(status_code=403, detail="Admin access required")
+        query: dict = {}
+    else:
+        query = {"approved": True}
     docs = await db.reviews.find(query, {"_id": 0}).sort("created_at", -1).to_list(200)
     return docs
 

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
@@ -29,6 +29,17 @@ export default function Checkout() {
   });
   const [paid, setPaid] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setForm((f) => ({
+        ...f,
+        name: f.name || user.name || "",
+        email: f.email || user.email || "",
+        phone: f.phone || user.phone || "",
+      }));
+    }
+  }, [user]);
 
   const total = subtotal + 50;
   const upiUri = useMemo(() => {
