@@ -34,6 +34,8 @@ from models import (
     Order,
     OrderCreate,
     OrderStatusUpdate,
+    PAYMENT_STATUSES,
+    PaymentUpdate,
     Product,
     ProductCreate,
     ProductUpdate,
@@ -113,6 +115,13 @@ async def on_startup():
 
     await seed_products(db)
     await seed_reviews(db)
+
+    # Backfill: mark legacy orders (created before payment reconciliation) as verified
+    # so they aren't blocked. New orders default to 'pending'.
+    await db.orders.update_many(
+        {"payment_status": {"$exists": False}},
+        {"$set": {"payment_status": "verified", "upi_reference": "", "payment_note": ""}},
+    )
 
 
 @app.on_event("shutdown")
@@ -283,7 +292,9 @@ async def create_order(payload: OrderCreate, request: Request):
         delivery_fee=delivery_fee,
         total=round(total, 2),
         upi_id=os.environ.get("UPI_ID", ""),
+        upi_reference=payload.upi_reference.strip().upper(),
         payment_confirmed=payload.payment_confirmed,
+        payment_status="pending",
         status="new",
     )
     doc = order.model_dump()
@@ -297,6 +308,7 @@ async def create_order(payload: OrderCreate, request: Request):
         f"New order {order.order_code}\n"
         f"{order.customer_name} — {order.customer_phone}\n"
         f"Total ₹{order.total:.0f} ({len(order.items)} items)\n"
+        f"UPI ref: {order.upi_reference} (verify before dispatch)\n"
         f"Address: {order.address}"
     )
     await send_whatsapp_mock(os.environ.get("KANI_WHATSAPP_TO", ""), msg)
@@ -336,17 +348,66 @@ async def list_orders(status: Optional[str] = None, _admin: dict = Depends(requi
 async def update_status(oid: str, payload: OrderStatusUpdate, _admin: dict = Depends(require_admin)):
     if payload.status not in ORDER_STATUSES:
         raise HTTPException(status_code=400, detail="Invalid status")
-    result = await db.orders.update_one(
+    order = await db.orders.find_one({"id": oid}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    # Guard: can only advance past 'new' if payment is verified.
+    advancing = payload.status not in ("new", "cancelled")
+    if advancing and order.get("payment_status") != "verified":
+        raise HTTPException(
+            status_code=400,
+            detail="Verify UPI payment before advancing this order.",
+        )
+
+    await db.orders.update_one(
         {"id": oid},
         {"$set": {"status": payload.status, "updated_at": datetime.now(timezone.utc).isoformat()}},
     )
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Order not found")
     doc = await db.orders.find_one({"id": oid}, {"_id": 0})
     await send_whatsapp_mock(
         doc["customer_phone"],
         f"Order {doc['order_code']} update: status is now '{payload.status.replace('_', ' ').title()}'.",
     )
+    return doc
+
+
+@api.patch("/orders/{oid}/payment")
+async def update_payment(oid: str, payload: PaymentUpdate, _admin: dict = Depends(require_admin)):
+    if payload.payment_status not in PAYMENT_STATUSES:
+        raise HTTPException(status_code=400, detail="Invalid payment status")
+    order = await db.orders.find_one({"id": oid}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    updates = {
+        "payment_status": payload.payment_status,
+        "payment_note": payload.payment_note,
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    if payload.payment_status == "verified":
+        updates["payment_verified_at"] = datetime.now(timezone.utc).isoformat()
+        updates["payment_confirmed"] = True
+    elif payload.payment_status == "rejected":
+        updates["payment_verified_at"] = None
+        updates["payment_confirmed"] = False
+        # If admin rejects payment, park the order at 'new' (won't move forward).
+        updates["status"] = "new"
+
+    await db.orders.update_one({"id": oid}, {"$set": updates})
+    doc = await db.orders.find_one({"id": oid}, {"_id": 0})
+
+    if payload.payment_status == "verified":
+        await send_whatsapp_mock(
+            doc["customer_phone"],
+            f"Great news! We've verified your UPI payment for {doc['order_code']}. Kani is on it 🍫",
+        )
+    elif payload.payment_status == "rejected":
+        note = f" — {payload.payment_note}" if payload.payment_note else ""
+        await send_whatsapp_mock(
+            doc["customer_phone"],
+            f"We couldn't verify the UPI payment for {doc['order_code']}{note}. Please reach out with a fresh UTR.",
+        )
     return doc
 
 
@@ -461,6 +522,9 @@ async def admin_stats(_admin: dict = Depends(require_admin)):
     exp_agg = await db.expenses.aggregate(exp_pipeline).to_list(1)
     expenses_total = exp_agg[0]["total"] if exp_agg else 0
 
+    pending_payments = await db.orders.count_documents({"payment_status": "pending"})
+    rejected_payments = await db.orders.count_documents({"payment_status": "rejected"})
+
     return {
         "orders_today": orders_today,
         "revenue_today": revenue_today,
@@ -471,6 +535,8 @@ async def admin_stats(_admin: dict = Depends(require_admin)):
         "review_count": review_count,
         "expenses_total": expenses_total,
         "profit_estimate": round(revenue - expenses_total, 2),
+        "pending_payments": pending_payments,
+        "rejected_payments": rejected_payments,
     }
 
 

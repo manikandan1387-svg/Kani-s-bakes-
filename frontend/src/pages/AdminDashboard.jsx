@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2, LogOut, LayoutDashboard, Cookie, MessageSquare, Wallet, Send, TrendingUp } from "lucide-react";
+import { Loader2, LogOut, LayoutDashboard, Cookie, MessageSquare, Wallet, Send, TrendingUp, IndianRupee } from "lucide-react";
 import { toast } from "sonner";
 import api, { formatApiError } from "@/api/client";
 import { useAuth } from "@/context/AuthContext";
@@ -11,6 +11,7 @@ import MenuManager from "@/pages/admin/MenuManager";
 import ReviewsManager from "@/pages/admin/ReviewsManager";
 import ExpensesManager from "@/pages/admin/ExpensesManager";
 import BroadcastPanel from "@/pages/admin/BroadcastPanel";
+import PaymentsManager from "@/pages/admin/PaymentsManager";
 
 function KpiCard({ label, value, hint }) {
   return (
@@ -48,9 +49,10 @@ export default function AdminDashboard() {
       </div>
 
       {/* KPI STRIP */}
-      <div className="mt-6 grid gap-4 grid-cols-2 md:grid-cols-4">
+      <div className="mt-6 grid gap-4 grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
         <KpiCard label="Orders today" value={stats?.orders_today ?? "—"} hint={`₹${stats?.revenue_today ?? 0} today`} />
         <KpiCard label="Pending" value={stats?.pending ?? "—"} hint="New → Out for delivery" />
+        <KpiCard label="UPI to verify" value={stats?.pending_payments ?? "—"} hint={`${stats?.rejected_payments || 0} rejected`} />
         <KpiCard label="Avg rating" value={stats ? `${stats.avg_rating || 0}★` : "—"} hint={`${stats?.review_count || 0} reviews`} />
         <KpiCard label="Revenue (delivered)" value={stats ? `₹${stats.revenue_total}` : "—"} hint={`Est. profit ₹${stats?.profit_estimate || 0}`} />
       </div>
@@ -58,6 +60,10 @@ export default function AdminDashboard() {
       <Tabs defaultValue="orders" className="mt-8">
         <TabsList data-testid="admin-tabs" className="bg-white border border-cocoa/10 rounded-full p-1 h-auto flex flex-wrap">
           <TabsTrigger value="orders" data-testid="tab-orders" className="rounded-full data-[state=active]:bg-cocoa data-[state=active]:text-cream text-cocoa px-4"><LayoutDashboard className="w-4 h-4 mr-2" />Orders</TabsTrigger>
+          <TabsTrigger value="payments" data-testid="tab-payments" className="rounded-full data-[state=active]:bg-cocoa data-[state=active]:text-cream text-cocoa px-4">
+            <IndianRupee className="w-4 h-4 mr-2" />Payments
+            {stats?.pending_payments > 0 && <span className="ml-2 bg-gold text-cocoa text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">{stats.pending_payments}</span>}
+          </TabsTrigger>
           <TabsTrigger value="menu" data-testid="tab-menu" className="rounded-full data-[state=active]:bg-cocoa data-[state=active]:text-cream text-cocoa px-4"><Cookie className="w-4 h-4 mr-2" />Menu</TabsTrigger>
           <TabsTrigger value="reviews" data-testid="tab-reviews" className="rounded-full data-[state=active]:bg-cocoa data-[state=active]:text-cream text-cocoa px-4"><MessageSquare className="w-4 h-4 mr-2" />Reviews</TabsTrigger>
           <TabsTrigger value="expenses" data-testid="tab-expenses" className="rounded-full data-[state=active]:bg-cocoa data-[state=active]:text-cream text-cocoa px-4"><Wallet className="w-4 h-4 mr-2" />P&L</TabsTrigger>
@@ -65,6 +71,7 @@ export default function AdminDashboard() {
         </TabsList>
 
         <TabsContent value="orders" className="mt-6"><KanbanBoard onChanged={() => setRefreshKey((k) => k + 1)} /></TabsContent>
+        <TabsContent value="payments" className="mt-6"><PaymentsManager onChanged={() => setRefreshKey((k) => k + 1)} /></TabsContent>
         <TabsContent value="menu" className="mt-6"><MenuManager /></TabsContent>
         <TabsContent value="reviews" className="mt-6"><ReviewsManager /></TabsContent>
         <TabsContent value="expenses" className="mt-6"><ExpensesManager onChanged={() => setRefreshKey((k) => k + 1)} /></TabsContent>

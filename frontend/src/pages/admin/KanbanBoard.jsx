@@ -13,6 +13,13 @@ const COLUMNS = [
 ];
 
 function OrderCard({ order, dragging }) {
+  const pay = order.payment_status || "verified";
+  const payStyle = pay === "verified"
+    ? "bg-green-100 text-green-900"
+    : pay === "rejected"
+    ? "bg-destructive/10 text-destructive"
+    : "bg-gold/20 text-cocoa";
+  const payLabel = pay === "verified" ? "Paid ✓" : pay === "rejected" ? "Rejected" : "Unverified";
   return (
     <div
       data-testid={`kanban-card-${order.order_code}`}
@@ -23,7 +30,10 @@ function OrderCard({ order, dragging }) {
           <div className="font-serif text-base font-semibold text-cocoa">{order.order_code}</div>
           <div className="text-xs text-cocoa/60">{order.customer_name}</div>
         </div>
-        <div className="text-sm font-semibold text-cocoa">₹{order.total}</div>
+        <div className="text-right">
+          <div className="text-sm font-semibold text-cocoa">₹{order.total}</div>
+          <span className={`inline-block mt-1 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${payStyle}`}>{payLabel}</span>
+        </div>
       </div>
       <div className="mt-3 text-xs text-cocoa/70 space-y-1">
         <div className="flex items-center gap-1.5"><Phone className="w-3 h-3" /> {order.customer_phone}</div>

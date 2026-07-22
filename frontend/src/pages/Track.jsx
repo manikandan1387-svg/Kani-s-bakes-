@@ -83,6 +83,26 @@ export default function Track() {
             </div>
           </div>
 
+          {/* Payment status pill */}
+          {order.payment_status && (
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full ${
+                order.payment_status === "verified" ? "bg-green-100 text-green-900" :
+                order.payment_status === "rejected" ? "bg-destructive/10 text-destructive" :
+                "bg-cream-200 text-cocoa"
+              }`}>
+                {order.payment_status === "verified" ? "Payment verified" :
+                 order.payment_status === "rejected" ? "Payment rejected" : "Payment pending verification"}
+              </span>
+              {order.upi_reference && (
+                <span className="text-xs text-cocoa/50 font-mono">UTR: {order.upi_reference}</span>
+              )}
+              {order.payment_status === "rejected" && order.payment_note && (
+                <div className="w-full text-sm text-destructive mt-1">{order.payment_note}</div>
+              )}
+            </div>
+          )}
+
           {order.status === "cancelled" ? (
             <div className="mt-6 p-4 rounded-2xl bg-destructive/10 text-destructive font-medium">
               This order was cancelled.

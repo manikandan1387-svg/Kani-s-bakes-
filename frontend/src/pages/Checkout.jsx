@@ -26,6 +26,7 @@ export default function Checkout() {
     email: user?.email || "",
     address: "",
     notes: "",
+    utr: "",
   });
   const [paid, setPaid] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -59,6 +60,7 @@ export default function Checkout() {
     if (!form.name.trim()) return "Name is required";
     if (!/^\d{10}$/.test(form.phone)) return "Enter a 10-digit phone number";
     if (form.address.trim().length < 5) return "Delivery address is too short";
+    if (!/^[A-Za-z0-9]{6,32}$/.test(form.utr.trim())) return "Enter your 12-digit UPI transaction reference (UTR)";
     if (!paid) return "Please confirm you've completed the UPI payment";
     return null;
   };
@@ -78,6 +80,7 @@ export default function Checkout() {
           product_id: i.product_id, name: i.name, price: i.price, quantity: i.quantity, image_url: i.image_url,
         })),
         payment_confirmed: paid,
+        upi_reference: form.utr.trim().toUpperCase(),
       });
       clear();
       toast.success("Order placed!", { description: `Order ID: ${data.order_code}` });
@@ -150,7 +153,24 @@ export default function Checkout() {
                 <Checkbox checked={paid} onCheckedChange={(v) => setPaid(!!v)} data-testid="payment-done-checkbox" />
                 <span className="text-cocoa">I've completed the UPI payment</span>
               </label>
-              <div className="flex items-center gap-2 text-xs text-cocoa/50 mt-2">
+
+              <div className="mt-4">
+                <Label htmlFor="utr">UPI transaction reference (UTR)</Label>
+                <Input
+                  id="utr"
+                  data-testid="checkout-utr"
+                  value={form.utr}
+                  onChange={(e) => setForm((f) => ({ ...f, utr: e.target.value.toUpperCase() }))}
+                  placeholder="e.g. 402512345678"
+                  maxLength={32}
+                  className="mt-1.5 bg-white font-mono tracking-wider"
+                />
+                <p className="text-xs text-cocoa/50 mt-1">
+                  Find this in your UPI app under the transaction — usually a 12-digit reference. Kani verifies this before starting your bake.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 text-xs text-cocoa/50 mt-3">
                 <ShieldCheck className="w-3.5 h-3.5" /> We verify UPI payments manually before dispatch.
               </div>
             </div>

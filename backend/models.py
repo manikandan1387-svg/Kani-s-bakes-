@@ -97,6 +97,7 @@ class OrderItem(BaseModel):
 
 
 ORDER_STATUSES = ["new", "baking", "packed", "out_for_delivery", "delivered", "cancelled"]
+PAYMENT_STATUSES = ["pending", "verified", "rejected"]
 
 
 class Order(BaseDoc):
@@ -112,7 +113,11 @@ class Order(BaseDoc):
     delivery_fee: float = 50.0
     total: float
     upi_id: str = ""
+    upi_reference: str = ""  # UTR entered by customer
     payment_confirmed: bool = False
+    payment_status: str = "pending"  # pending | verified | rejected
+    payment_note: str = ""  # admin note when rejecting
+    payment_verified_at: Optional[str] = None
     status: str = "new"
     updated_at: datetime = Field(default_factory=_now)
 
@@ -125,10 +130,16 @@ class OrderCreate(BaseModel):
     notes: str = ""
     items: List[OrderItem]
     payment_confirmed: bool = False
+    upi_reference: str = Field(min_length=6, max_length=32)
 
 
 class OrderStatusUpdate(BaseModel):
     status: str
+
+
+class PaymentUpdate(BaseModel):
+    payment_status: str = Field(pattern=r"^(verified|rejected|pending)$")
+    payment_note: str = ""
 
 
 # ------- Review -------
